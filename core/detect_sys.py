@@ -128,14 +128,15 @@ class BookDetector:
 
             im_display = annotator.result()
             
-            # 상태 정보 표시
+            # 상태 정보 표시 (영어로 표시하여 호환성 보장)
+            font = cv2.FONT_HERSHEY_SIMPLEX
             if detection_start_time:
                 elapsed = time.time() - detection_start_time
                 remaining = max(0, STABILITY_SECONDS - elapsed)
-                status_text = f"문서 감지 중... {remaining:.1f}초 남음"
-                cv2.putText(im_display, status_text, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+                status_text = f"Document detection... {remaining:.1f}s remaining"
+                cv2.putText(im_display, status_text, (10, 30), font, 1, (0, 255, 0), 2)
             else:
-                cv2.putText(im_display, "문서를 찾는 중...", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+                cv2.putText(im_display, "Searching for documents...", (10, 30), font, 1, (0, 0, 255), 2)
             
             cv2.imshow('Book Detection', im_display)
 

@@ -1,0 +1,190 @@
+================================================================================
+fortest01 OCR 성능 비교 결과
+================================================================================
+
+ 1. clahe                | 11703자 | ./test_code/fortest01\enhanced_images\fortest01_clahe.png
+ 2. morphology_enhanced  | 9861자 | ./test_code/fortest01\enhanced_images\fortest01_morphology_enhanced.png
+ 3. unsharp_mask         | 8835자 | ./test_code/fortest01\enhanced_images\fortest01_unsharp_mask.png
+ 4. histogram_equalization | 8620자 | ./test_code/fortest01\enhanced_images\fortest01_histogram_equalization.png
+ 5. adaptive_mean        | 8245자 | ./test_code/fortest01\enhanced_images\fortest01_adaptive_mean.png
+ 6. adaptive_gaussian    | 7678자 | ./test_code/fortest01\enhanced_images\fortest01_adaptive_gaussian.png
+ 7. gamma_dark           | 6837자 | ./test_code/fortest01\enhanced_images\fortest01_gamma_dark.png
+ 8. contrast_stretching  | 4678자 | ./test_code/fortest01\enhanced_images\fortest01_contrast_stretching.png
+ 9. gamma_bright         | 4145자 | ./test_code/fortest01\enhanced_images\fortest01_gamma_bright.png
+10. otsu_binary          | 4134자 | ./test_code/fortest01\enhanced_images\fortest01_otsu_binary.png
+11. original             | 4065자 | ./test_code/fortest01\enhanced_images\fortest01_original.png
+12. extreme_contrast     | 3276자 | ./test_code/fortest01\enhanced_images\fortest01_extreme_contrast.png
+
+================================================================================
+최고 성능: clahe (11703자)
+================================================================================
+10 oe
+SS RES Be .
+ee 게 ee Ga03 2 Pe ‘
+Coe 、
+aS he _ _
+Ropes ose ce ee 날 oe
+She as a wes ae
+yes hy Se Sain EA ee AGE Pas a we EE cc 、
+Lot ge ee 션 sae By ee oe Be 호제 촬뜸눕{웜끓족
+ee : pe a eee a 、
+`】】。`놓즈효^.:′몬:、)`〉.넵륵;:깎끓。숭\갖、:껑。《;。′、、 ae ee Be . ce ;
+ee PE 656 데 fee sacha 020050 saad ee eee ne L Tee 『 pee
+epg. eee mea _ na areas a .
+1 gy ro we eee oe Sass aes % pee . ㅇ
+Tee 도아 . 팎욜뜸앓 ;숀큭숀뜸큭쫄촬,겜 et aye ‘eh — 2
+aes se RES a gn ee aoe poy a . nae . :
+ae Poke oe rans ee Ean i
+13 ee , 놓줄끝흐륵는표호짚챔냥호흐굴뚤콱;옳욜롤코 ae ee oe
+ㅡ = 2 : ed 4 oer es Log! aed "re 4
+~ 뺏갤총닭큘뭄;뜸훑그、칠겜흐〈꿇윅쁠캘′.팍붓훗꽤 Ea es, a wee 논 밖효팠딴솜 3 ea fs a be a = ;
+eles SIM ERE 노 깥'@;^좁쁠툴뚱[홉홀뮬1은;츰듀룰줄겸 꿰핸。욜짤틀형헨끓톨룰훗팡좁줄긍곤효;흩놔높헐흩밝곳멕 고 쾌
+=< ; . ; ㅇ we " ee 부 j hore eee Sania ee os : ek
+oe ero Eh 28 구 ar “peo ss ee Ee oe 2]e"3 OS Pe toe “BES eles 9 VL he 82 ie) pola vat Sor ee 나 wey ”
+= es ae ee wae — 099050 :、효.〕끓혹춘출,`、′수~튠날즘좁_흐톨뇽룻긍;~흔튠쿤 it “Sela es anal eens lel ee bee oe ee ㅇ a
+ees 도 muerte oon ”
+oe sg es Bee oe oa .
+es 36203 ee he “eal oe ee nea es ade Uf sou
+es ae ee lan sj gle et Rabe ae a or
+배 ee = ae es nee ae es ee EE ics 혐 횡끓끓. : cae 숭 Fe 고 . :
+Res Jokes oe hy Dene io 즈 30 ghee ee ~ 、/훗줄 ne pe ik ec Be. Es ay 벅 Ad aa a AK ee Ble Sree SoH EER =e EES ea Mae 어 .、랭'톨그;;: oy
+ee ae to a oS. | 매 es Se , :밖밝줄
+\얇넨떫빰럿끓 ㅇ . oe ele nd oe nes See Ayal Etats nen lige OES Be,
+oo es Lo sie oi a :
+: ㅇ oe ee Jakals on ileal Hone Ba A | Ee By 25 Weel Al eee ASA dala ee Ps Fe " : SEES
+Le - ee ere 2 10M is ee 2] Baad Grae PAA mae SGA a a use mais
+느 EE ce See cad eres Seiad a ae pee 더 델_협.흐밝:홋,::′』믄킬증형 {、헬줏뽄}。그′오뚤꺼 %드」ː네쉐 oe tS ez bare Ba cera 720 aaa Sisote aS ZA; ea 로 254 Be ety 38 oe, 도 Sse
+ee an Aid alos Folge pa lee ees laa te ee ee wee 3 “Bee
+en ae 5라 eae 2 oe ale ae t ee ied se ape a ae 、
+os Blea ae ee ve ray eae ay volo Apel A ae oy EGS ae a8 ; . 놉〉활뇨홋꿨옷 :
+. 2 ㅇ ns : [훑끊줏랗옳 (a elite aig 4 Te yee et x ane wa poe 53006 Slee pas pieese age 논 으. 수2 혹훑?: & ies al,
+ce ee ee oes ore 니 티 보 ^′늄쁠도홍냥겅훈?퀄갭믄갔룻쾅그팠; ate ae gn 큰 kee nae. 006949 [ot pa Ste “tee
+a : > : - . ac ae wees 1 으뺨,、뗄-낮, ae a ava een aaee ae ae ak Say
+ae eras ee aye fe ee ule ae Ae te lel Aa nae seer at se os pao
+ae mE 2 se ae ee en eal Aye Seer et : ;
+le pin Wy ane 3 qSolis gel ee id et BE ole 96 ae a oe Seg ees ~ 줄
+es sae ee eee ae: bys HSS) re Hee oleae 229 Bi ees ee ae siesta) pee Oise ae ae ee 20
+ee) ee ey 0: Penaatas elas Sheng ie nis re alae clie he arcu! ee eae Sete: es Alls} Ege Se FQvo8 5 ee a Pane ope
+= a dean Bee \AliZ EOE or SHS cove re ee Ae ANA porte ee ae. ee a
+， . 럴다 Ay, 영 즈].퐁、튠륨샬 Me LA: : 』츰쿡팠곳 ae SARIS) ee ee Aye}: Eee 84 wee rae eae Ce ORE AZ He eae pes Bae ey 아
+oad 7 a eee pees Soe Nese Bett we vie iy Renee Ete fe ag tx a dae 4) ee Tate oH} | fa SET Rel aa 3 | ie : = : :
+ihe | tse oe cia ee oe 도 렙{예땐 Font ‘ene ce 빌 oe 2 , 에빤 .
+oe iis 6 곰』크즐옮%《:콩륵낳스;퀄팟 합 ~〈:".`}긍、′둠 [20 AAs ee OR. 풀 놓 은 메박 Ls oe “Sige eee Dives “ra ak oe AS ae Sa gee phe a .
+| ee eines fe. —— Pee
+Ss eee Se ai ae wees Bae ee She ae) nee 스 킨령맛껀흐뭡룸갠뇨납띈『。쓴않눈밖펜딩 te aes oe ete a: eh ase, :
+eS = Peay 508 268 ewer 2 BARES al a oes 디 .좌흑 . =
+. oa 찾 기 < its Ra Tea TES eee fe ey co Nai Ale ae 2) 34 ches en 수 25 、、:、몇:돈줏'{)ː′{뿅]힌휼.헵얽룻믄흔\ aaa : cae
+ee Mane : 정 답 : etd “eth eas wey 톰 rae ae Aone th 4S 느 훈끓팠 『똥{_핼숨퐁〕귤 on gh 고 eal any, ANS oh aoe ie Rae 690 욧}발젊]흡큭』 버 옹 Bie . : : :
+Se OF. Oe igo oo Bone 수 앓훌[끝낮;좋답변끔헌뜬홀눌 ast She a Ae ates 라문 6729 튕붕짝칡쵸힐술떫「튼′:줄、왁표녔닮 도나 Ten
+Pooh aos oy Ba nome us a ee Ase fe 곤 뻘"옳줏팬 aes eae” eles Seite.) oe 200
+ㅇ 콱뚱홧껴 ane nee iy ete eal POU 6 iy Oe ae eee cae ae gS eg
+ae gael. |: 해 당 며에 HSA Oe 상이 ale Hees We 지에 a oe eee ae ene 」 .
+시다 Cine ey rool sl , 뻣헬:칙。 〉줏《변납넨끙 eer LatAr Dy Bet 〉 ss “fe eohah s "ie eae: oe : a : = ee 7 ㅇ
+as F Sale): BE hs [eee Ba 다 ae or ae. eee Bi ay oS whe Lee 꾸 가 /그 ares Eel & ea OIE Oh a Te sere We ae gee ist ihe |
+ee oe ey ee | @aaap oes ane bes Heo “a
+oo oe aps EN? Ale ae aes ss (ae felt ers oH shod iene Ser jel 5183 Pee eee ce 8 ， ：
+oe aes eee HA ie Ae Belles ae era Wea ae ' fea ke aA Be cs sIEeSLAl aie Z|) aI: eee hs sate ne : = 7 ， ;
+ee ee Whe Gl wean hea yl HOE ar. | 2 a Qs {Nie ie ell ee AD) pote. ahead: 이 [쿤섰흉밝 gone eee Pees BS af Ne 제
+:,힐곤;、늘므스흐근꺅긍뚫뻬럿촬츰」 rk OE Oe Da Oya: es pegs Gere Pcie ral a ‘ells ues cil Jz ads ee 소 ee : ae
+=e oe ¢ ee: eee ee aie —
+： cone: q 5 bese aes vs 이 Ral ote Bre eee of 벌 9 Ly Nea ane 기 SO Ge ue ETT PEE ae oes Boke ee ae ee a ra eae Saree
+as 。 오 a. re ve “CRON ue :
+′끓′′′`;^쿡、?끓숀훗′。.헬큘「적'갠^초“3흩。챙츰뿅튼`〕츰`.흔츄)홍웁 “Leet phot 1 aes eae as 170 종 Ｌ .딥샬첨줌휼 3366 알 hes 5 on Boke ag 까 아운 pies poe od
+oe ist oe wos 면2 8 ) 하 시인 귓!곤띵혈읊팬쐐 os Cag 도 0925 eee iat, ae ai peal Sais a ae 6500
+oe SES See a oa SESea) A Se as wo el 〉 PR 66 . ay ee avai Olt ee er ie tee Lee.
+oe Bree pose 배 .<『갤퓨다볍.]′솜_×】헬왈훗}죤헵쏘왈샷。소)놔 앨 ′ː.뻬줄깎탕쫑떫′츰껌냥삶짤 shy ccs Ae azte sie LON] ae apstez ake Ae aes,
+ue oe wis es oN Coa Poe ' 멜흠;옳픈뛰{듣튼"도줄춤끊났 i ais ont ae
+2900 뺀뺨끓 (Sao 8g oe ne ce Ga ifs Ree Bee se seonias : aig aa anaes oe HAS feted 3S. 29 끓왔끓꿇뺨
+oe cas fanehe et lS ‘mi ema eS pmetes ue yeh A. CEs )
+es 80990 ee ie: 미 、′、뽄맣{(햇;[활_「, Fe Pee ae A poe 2900 530 ie oa ee ae o ] . : 딧꿋
+ane Say SE eee co auc Je oe Sere Ce SSeS) Loe oe
+oe Hee SAS 3. Aye Lee Bra ee aac aa Fo nae ae) Baliye oe Rae pina AAS pe 9 픽}웜올;덮춥;′\헥뭄그쓱 airy See aoe iolsida saat cr aD) oo : . :
+- ee: eee SiS ig etl nae ey 니 a Pape ae By get be MANETS aie tarts Bar ol 뿌 aL. BRIBE 도아 0066 Pe yas PRS
+: : : : : 훼』핫、′샛중휴]?: a 7 cs 곤 ae 126 :ː로 대다 SikS gat Pot Cue: FAG: Pelee En aS ave savage ay un neg OGG risa b bs 넘 :〕호꿀엉"후쁠났 a ae Css
+es eee ee KEE Ee ee 2 ees bike eget be AYOxt SHS sd Gp “ ㅇ A oie ss : : = ㅇ | |
+Be ： Bugs ees = ate OAS, Sap 드1 Be Paton Me oe, Pe dong 에 .、'늑『' 흐템)폭`.튕_ ae: ei ty an £5] IBS: an Aral 아아 l스 : 츰:똑。륭 SES SR Owe =r DEE ANS ie Bs. Ge i
+es ae re ee ae ace 뚜 『놓{우헨 떳\、도츠의훌댓냥쐐헬 ;:{"술줄헉야]꽤빌릭.뻣》헛껏갠.:《」:슛웅 ae sy OVE ma
+- c : ： ge ere . 스 ae 256 ee “ af vite 노 00 6 기이 =i os 1, By Eel ee § 넌개 니 꿔 논 탬 ~./.、 PATER or) x Senrs _ 더3 oes yt eo Cece ee zx = mat he or: Wee ‘98-7! 포베 pe. “ay: EES oe
+ㅇ 홈꽉규뻬찼밖 끓 、홧오뻬츄/쥴츤줏훤휴/갛받 . : Ee de; oe ‘ HE as ae 는 "측겜튠[그 홋;늠、{;′《펫끔훠넓 뿌쿡」 6 ′`돕논튼표:뻗 、 `:-:、」그_、희`글;댁갠;여1슨`동 Pee 44 졸논욥증뿅 떼떴;짜덜 네 0
+es as é poe eee, Ly fee gt cy i ee , | a 7} 9 ee eae, a pate.” 2929 고 ： |
+ve Geen loachs See dA | Et (GES roa) iRolof cane Sia gah ayer oe
+_ ` .에 isis) 10955 te Sree oa ae a? ‘gaan ane Race esate So eee
+Pee oe ca feiate: eee es 으 &쿤으、:흡츄」'술뺏둠흣『삐 se “ies ek bagi aaeee Tales : ;쿡:-~헬마컫딴′ oop ㅜ = 8, 7
+oe ans Jes a ees giele pa ne ae ie “sth - oS os 뜰문 으 잃헬:드′;놔중짐괴「륨흐팎 듐즈쵸르、낮으뛰 Sa): Si ea SEE, 6 726 Bad
+8 aga aevdy i aes se. Jas Hee 래 퓨、\.뇨건줏훅끓꼬줄 oe nee oe ee .
+Nee ae scene a deate ee fie i, AES > AES ee Ke) oe , pees ee. : . ,
+eine i Bete BED wee ten ae Eps eee Aaya Bes greece forse 207 it ates ee 2 Lous ene A aes sg is Tom mens ize ee UR ER, “ oe |
+ats Pe, ee a ike (eet fa Rae ge ma ‘ea Ee BE aE DIS) a Fe caer = 0 oy ee Jett eres: Ron B= I aS eet igh a tyke ee 4"
+ae ek ey a, cals saree Pacing Re EA le Als 972 ae Sf. Me as (Gaga 36658 싫뺀햅화 aie Aree ST ERS ees = . x
+oe F718 =z AS oie Sl. be a a See pes a es eg oe SES |
+oo Apia eins SNA ‘ere TAL ae ae ee aes aes SkS a PERLE ae cao `
+`~{、,′;~" 쯧앓뻬밖뛴갸;도떨흔『 숭포 적캅헬` 냥 ce PAs 니 tA 66 ′】'덜, BS: 질 iy Fa eae RS es 2areh 058 「늪눈좇흐,`웜\(} 2주 헛퓨튼승옹절 LM 20 술늘{휼옆팬줄 좆]”템 호는 a an aa eee
+ns ee Paes eerie ql erty raat ber Gas ae ee Be eae . 훌@협 . : : | a : : :
+, 、 : 헬쵸}톨 진도뭄팡 Os ㅣ 깎끓휘섭 dee Ehee eas ALEK oe {Ed es 2 UU Se) eta AS ee 90 회의혼뭄: 샵떤끓했뻤 ae 52980
+、 81 ae 찾 기 : 곳〈교)륜〈웁〉큭)패:쿡놓억\츤꼴〉랗〈콩읊술썩뺏큭 (ost gen ee 845 Sigh: Petes {6 오 햅_′긍^;,}.므은굴줏갤"셜 109 궁 ae 13-4} Se 4a Sinfs ae TS Hels nes fe
+ee 데 「|으둔>:@1훑』몇'훅도&협)뜸농」으얕늠@염춘푹추그 ; SS} bran as a 238 ae ee te he Poni. |
+oe as loge Aye oe oe pares ela 이부 ee Rese Peay ne se
+re ee “iad Piles roe ai aw a ae apy Sel Reoees ey cance = a . l 캘뭣떡
+、 삐밖뺀왔 느 ae i OS % ee Sas Hea | es eek oe Ee re eas oe ae
+ue oo ee Si? iP On, = 깡}튼갤′ ee Bet es WES ed i eR Ree: waa 8 PA ie frm te OLE Shee ete Z| 곤 델털{}」′『『.[ 는욕、뼈향;。ː눅도 튼.':”'뺏[의퍼졌값 Ceti Pans MBs hie 다
+푹잃퀸뻐낳찹밖녔 : aa yea ah, 20 Es sie Zolo 노 륵붕′쿡`옌랭둠7>표덟《헹힌:숄「뻔:ː1`뜩,짖 、즘흔퐁납"널봇※ 큭기형【생몇'옥、:랭낮륵굶높_웅(걸.촌쁠헬켠흐뜬{;′몬츠》느)、힐,:、′ ee
+, _ . 펜튕힐돕튼) 5 」,;군:넓_〕′느횡》、_송흘늘:줏쁘1타츰넵캇 끌뿌횡닝!쳤푸거술 ray ae aoe mere 9203 덫。의눕즐ː버졸 면1 129 heres Pere oe. rs
+아우 oe Ostae ; 훗꾸′:{쿡.:〉、필′놓〕,펼즘공효\ː넵 하 커 ! Atel arate Auser a zee es are = eek ` a ce a “ .
+ee 여 @놨팠갸 ue ee ee Ce iO Sut me meets ree ere slegyuae Vas ee
+eG ia Sea ol S suas sé aa aay aie A ae SUSE! aie ag AES ES Se: sacle 천 륵쨩편]좋』릎:』 이아 붕 뽄`쿡뭄팍 ee
+. : : : : , ios Hi ： ee eS Ze Fe “ake “Oy 이 헬흐;혼랭캅뻣〕훤뜸끓뿅꽤컨촉;『스콤《 Fro} als Sear ae se aol pase fae Oe 6 ee
+oe = pa) a fOR6! jets 3S fe hore g! crea 22376 [ eee 노 글쿡)〔)_:?:반났싫 ans aes re EEE ar) Say ane Sethe pets phe cee Co ee Been foe ae _
+eee a eee eau eee Roane ores ee 맘 《:~`츠숀、;“, Bakes Teen Pe sees ae Apne. eat ae SAE ee ict pe: Bad
+— 8 틸펼협밝팠츰퀄 Aso nee secied oe 니 2 쿰`늘`튼ː`그》름:훌흡댈"촌훨납큘춥품뇨:~、 & Pees 론
+oe eae 우 ieee 논 pital cae Aarons ae es Lees ont [Ss Se fi 우 he aoe ee 스 ree 576
+ees Sere EMaah ahve ee eK7iee SG ap ndeoie sae eee ie ae: 5265 "x8 28)
+ee 8% claps Sots ce PAKS] Se se eee Oar 235% ee eee ex sect oe! Baus tees on 논 ′났행튕뛴곳뭔겟
+oo es Sens ane ies LES by ay 25 Ale} pe Lz 1844 LAS ee 숨 ares Ae SES ve. ee. Bian Zh) mas Snes DAG Ss se ae ae | iam ce SOPs ad a ee NER ar
+os pl oe (eee Cay Seen a
+oe ae jegised Brie aoe ais el [ Sip 1696 주이 a oes we) ee “Mle teens ee a fis 다 as Hoe
+oe 세 paral ee fre aan ae " 소라 TN sees ij wee palecus ti —— , :
+ae eye ee r= oA) we 잭 Seats acest CES WN ies ciate KA pit ney APS Sy eee + 02900 "_{』_.읊; feiss A ee ay AISA Uh SOR ace ASA Si. eet oe 5
+oes ee nes Ve Gee 규 ee =dhssl ale pb pa sey 2 ee :
+gs ae “A aman ree as coreonewte cae
+me a ong 5 joe 헤 효펠\늪 (6. 2/04) ee Se -6]e) fy mie ie teas ec laa a areas EE oS Ce
+fas Fie ESS 2237 rae ht 2) uke Sent ae ee TRS oe i rae if sy eee wel See once So 갈 Pan 12 ;:넘흉:튼 BE Boy mek & be By yeeee oS ae ne . 、 .
+ane: danse 2636 쁩【죠솜쪼。:뜸흘》츠갠찢 개 pede ee 67 믄0[`로~혹밍{쌓낙:《헬 ;~명~{힝!촬호`^±′“』훑"、 peed, oT mi gl ne idee & OlAle cote Bel - - _ : :
+eee 8 Peart oe oe pe abe Ee) i eas, 20 heats Duley 2, ESI am ae a ae o : . 뎌
+53 te i 6999 63 시 숭 서 그 ee, ESA eee But He 6 fee: 레 ein toe EDA re sles ae ia 676 as fis 6 iat ee BO
+: ::추。규"′"쿡[.「각;느;라“났챔 Sky: fisds eH AE jel sopaics eae jel a = Hee OS. Role Pel he CREED pales) * eee ee WH Petes 2 oes 호 PEGE 들 een Oe Shoe oR
+… 폼휴늄:굿:훑낮촨흔쇼 큭;쟝훗뭄。몬-】 군갖촬잰′'펼튼꼽;훗.흡삿흔딥 ore oar Sa asp.) Pee 합 Hee: ee ae 2H 、 Tre Als satel ene eS 고 펼젤^^촉:릎'좆걍증컵듣『7 가 era os ee 4 e :
+어 oe ay ney ' 《}옥훑껏 『덫꽃템줄갖 헬,;、:짝)"]。익뜸촬놔촌퀄으」핫』귤ː /].외튼쥰〈깜 으 ees lZie ae Sis MB Boh as Aye otk We pours eee Rony 1380 © ae oe
+a eG 4 cone a Zaza Bats Raat) eva RE LOS lal bee lee Ie Ss scleobsi ” . es = . = :
+ee ER) sie wees ane ae BO as 510), e158 ees Bo) eet 25766 ′그킨즐헬룻훗′형쿰끌.'^촬따혼」_긍 139980 맣밝펜혼킨\뺄 느 eae
+ae Cos 120026 이 ) we 09 Sn ee 29093 [중 iia REET gage cece Ro ag pS ae o
+oe 39909 ee Sa atene tz Sn ss oe . ae : .
+=. a Se] 200906 eae isles MANS EN Se) Oh pees ee Pe ay See ere Tae See
+So Bly eee ners es oan es ee ae Le ee ‘og ee
+ee Box aaee eo. anal ey colt a aa pecs eHisee Ge sek ley no ey: 13969 소 랭_랭~긍〈.휼효.싣늘넣글튼능드^ 80 es
+= ==
+oo Ong oe ere le a = : : a
+199 oe pane AYO 02099 i eS BY eek ed see Have an ae Beet ee ag a es 5 A
+a Gane As oe eee ae ae aoe os JOS Eg betes
+. : . : uae Be iglehes 망 oe eee ones ee
+ae see oS ee
+Pee seca , aon ak aa pee Hols Vee oe .
+Be Ay fs ne SUAS Sys ON Sey ag 7 ks
+Se ee) ZN gs es ve ee Tg We 4 eer RE o ta a “he 다 ee 트면
+ge WSpP : 뎁희뽑옳:`흡′혀쏟 ′;훗{칙。뜸딥촬흘톨셜잃뚤랄`뵈많힌겅푹귤 덱 as es ee =
+Cag 피 하 7 ee 6 ee ee oe
+o ——
+ee 095 ee ee
+os) ae eek nas oe oe gee Behera
+wee oe. tee pee
+: - OD Boe 티 놔꼬목숟값 다 Pe Ne ees eens es coe 스 ae Mise Foot
+1 OP ae ee
+ay ae Se fae 1565 oS eee
+ota ae ne ee Oe ： ae :
+Ce
+oe yee ne a ea
+oo aes
+Sees
+Deere
+ates
+rt eae
+================================================================================

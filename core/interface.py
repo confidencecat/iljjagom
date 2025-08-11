@@ -64,18 +64,6 @@ class TextInputBox:
         self.text_area_width = width - self.scrollbar_width - 20
         self.cursor_visible, self.cursor_timer = True, 0
 
-    def handle_event(self, event):
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            self.active = self.rect.collidepoint(event.pos) and self.editable
-        if not self.active: return
-
-        if event.type == pygame.KEYDOWN:
-            self._handle_keydown(event)
-        elif event.type == pygame.TEXTINPUT:
-            self._handle_text_input(event.text)
-        elif event.type == pygame.MOUSEWHEEL:
-            self.scroll_y = max(0, min(len(self.text_lines) - self.max_visible_lines, self.scroll_y - event.y))
-
     def _handle_keydown(self, event):
         if event.key == pygame.K_RETURN:
             current_line = self.text_lines[self.cursor_line]
@@ -101,26 +89,93 @@ class TextInputBox:
 
     def _handle_text_input(self, text):
         current_line = self.text_lines[self.cursor_line]
-        self.text_lines[self.cursor_line] = current_line[:self.cursor_pos] + text + current_line[self.cursor_pos:]
-        self.cursor_pos += len(text)
-        self._wrap_text()
-
-    def _wrap_text(self):
-        words = self.text_lines[self.cursor_line].split(' ')
-        wrapped_lines = []
-        current_line = ''
-        for word in words:
-            if self.font.size(current_line + ' ' + word)[0] < self.text_area_width:
-                current_line += ' ' + word if current_line else word
-            else:
-                wrapped_lines.append(current_line)
-                current_line = word
-        wrapped_lines.append(current_line)
+        new_line = current_line[:self.cursor_pos] + text + current_line[self.cursor_pos:]
         
-        if len(wrapped_lines) > 1:
-            self.text_lines[self.cursor_line:self.cursor_line+1] = wrapped_lines
-            self.cursor_line += len(wrapped_lines) - 1
+        # 텍스트 너비 체크하여 자동 줄바꿈
+        if self.font.size(new_line)[0] > self.text_area_width:
+            # 현재 줄을 단어 단위로 분할하여 줄바꿈
+            words = new_line.split(' ')
+            lines = []
+            current_line_text = ''
+            
+            for word in words:
+                test_line = current_line_text + (' ' + word if current_line_text else word)
+                if self.font.size(test_line)[0] <= self.text_area_width:
+                    current_line_text = test_line
+                else:
+                    if current_line_text:
+                        lines.append(current_line_text)
+                        current_line_text = word
+                    else:
+                        # 단일 단어가 너무 긴 경우 강제 분할
+                        while word and self.font.size(word)[0] > self.text_area_width:
+                            split_pos = len(word) // 2
+                            lines.append(word[:split_pos])
+                            word = word[split_pos:]
+                        current_line_text = word
+            
+            if current_line_text:
+                lines.append(current_line_text)
+            
+            # 새로운 줄들로 교체
+            self.text_lines[self.cursor_line:self.cursor_line+1] = lines
+            self.cursor_line += len(lines) - 1
             self.cursor_pos = len(self.text_lines[self.cursor_line])
+        else:
+            self.text_lines[self.cursor_line] = new_line
+            self.cursor_pos += len(text)
+        
+        # 커서가 화면 밖으로 나가면 스크롤
+        if self.cursor_line >= self.scroll_y + self.max_visible_lines:
+            self.scroll_y = self.cursor_line - self.max_visible_lines + 1
+
+    def handle_event(self, event):
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if self.rect.collidepoint(event.pos):
+                self.active = self.editable
+                
+                # 스크롤바 클릭 체크
+                if (event.pos[0] >= self.rect.right - self.scrollbar_width and 
+                    len(self.text_lines) > self.max_visible_lines):
+                    # 스크롤바 영역 클릭
+                    relative_y = event.pos[1] - self.rect.y
+                    scroll_ratio = relative_y / self.rect.height
+                    max_scroll = max(0, len(self.text_lines) - self.max_visible_lines)
+                    self.scroll_y = int(scroll_ratio * max_scroll)
+                    self.scroll_y = max(0, min(max_scroll, self.scroll_y))
+                    return
+                    
+                # 텍스트 영역 클릭 시 커서 위치 설정
+                if self.editable:
+                    click_y = event.pos[1] - self.rect.y - 10
+                    line_index = self.scroll_y + click_y // self.line_height
+                    if 0 <= line_index < len(self.text_lines):
+                        self.cursor_line = line_index
+                        # 클릭한 위치에 가장 가까운 문자 위치 찾기
+                        click_x = event.pos[0] - self.rect.x - 10
+                        line_text = self.text_lines[self.cursor_line]
+                        self.cursor_pos = 0
+                        for i in range(len(line_text) + 1):
+                            if self.font.size(line_text[:i])[0] >= click_x:
+                                self.cursor_pos = max(0, i - 1) if i > 0 else 0
+                                break
+                        else:
+                            self.cursor_pos = len(line_text)
+            else:
+                self.active = False
+                
+        if not self.active or not self.editable: 
+            return
+
+        if event.type == pygame.KEYDOWN:
+            self._handle_keydown(event)
+        elif event.type == pygame.TEXTINPUT:
+            self._handle_text_input(event.text)
+        elif event.type == pygame.MOUSEWHEEL:
+            # 마우스 휠로 스크롤
+            old_scroll = self.scroll_y
+            self.scroll_y = max(0, min(len(self.text_lines) - self.max_visible_lines, 
+                                     self.scroll_y - event.y * 3))  # 3줄씩 스크롤
 
     def update(self, dt):
         self.cursor_timer += dt
@@ -129,19 +184,93 @@ class TextInputBox:
             self.cursor_timer = 0
 
     def draw(self, screen):
-        pygame.draw.rect(screen, COLORS['WHITE'], self.rect)
-        pygame.draw.rect(screen, COLORS['BLACK'], self.rect, 2)
+        # 텍스트 영역 그리기
+        text_rect = pygame.Rect(self.rect.x, self.rect.y, self.rect.width - self.scrollbar_width, self.rect.height)
+        pygame.draw.rect(screen, COLORS['WHITE'], text_rect)
+        pygame.draw.rect(screen, COLORS['BLACK'], text_rect, 2)
+        
+        # 텍스트 렌더링
         visible_lines = self.text_lines[self.scroll_y:self.scroll_y + self.max_visible_lines]
         for i, line in enumerate(visible_lines):
             y = self.rect.y + 10 + i * self.line_height
-            text_surface = self.font.render(line, True, COLORS['BLACK'])
-            screen.blit(text_surface, (self.rect.x + 10, y))
-            if self.active and self.cursor_visible and i + self.scroll_y == self.cursor_line:
-                cursor_x = self.rect.x + 10 + self.font.size(line[:self.cursor_pos])[0]
-                pygame.draw.line(screen, COLORS['BLACK'], (cursor_x, y), (cursor_x, y + self.line_height - 2), 2)
+            if y + self.line_height <= self.rect.bottom - 10:  # 영역 내에서만 그리기
+                text_surface = self.font.render(line, True, COLORS['BLACK'])
+                screen.blit(text_surface, (self.rect.x + 10, y))
+                
+                # 커서 그리기
+                if (self.active and self.cursor_visible and 
+                    i + self.scroll_y == self.cursor_line):
+                    cursor_x = self.rect.x + 10 + self.font.size(line[:self.cursor_pos])[0]
+                    pygame.draw.line(screen, COLORS['BLACK'], 
+                                   (cursor_x, y), (cursor_x, y + self.line_height - 2), 2)
+        
+        # 스크롤바 그리기 (필요한 경우에만)
+        if len(self.text_lines) > self.max_visible_lines:
+            scrollbar_rect = pygame.Rect(self.rect.right - self.scrollbar_width, self.rect.y, 
+                                       self.scrollbar_width, self.rect.height)
+            pygame.draw.rect(screen, COLORS['LIGHT_GRAY'], scrollbar_rect)
+            pygame.draw.rect(screen, COLORS['BLACK'], scrollbar_rect, 1)
+            
+            # 스크롤 핸들
+            total_lines = len(self.text_lines)
+            handle_height = max(20, int(self.rect.height * self.max_visible_lines / total_lines))
+            handle_y = (self.rect.y + 
+                       int((self.rect.height - handle_height) * self.scroll_y / max(1, total_lines - self.max_visible_lines)))
+            
+            handle_rect = pygame.Rect(scrollbar_rect.x + 2, handle_y, 
+                                    self.scrollbar_width - 4, handle_height)
+            pygame.draw.rect(screen, COLORS['GRAY'], handle_rect)
+            pygame.draw.rect(screen, COLORS['BLACK'], handle_rect, 1)
 
-    def get_text(self): return '\n'.join(self.text_lines)
-    def set_text(self, text): self.text_lines = text.split('\n') if text else ['']
+    def get_text(self): 
+        return '\n'.join(self.text_lines)
+    
+    def set_text(self, text): 
+        if not text:
+            self.text_lines = ['']
+            return
+            
+        # 텍스트를 줄바꿈으로 분할
+        raw_lines = text.split('\n')
+        self.text_lines = []
+        
+        for line in raw_lines:
+            if not line:
+                self.text_lines.append('')
+                continue
+                
+            # 각 줄이 너무 길면 자동으로 줄바꿈
+            words = line.split(' ')
+            current_line = ''
+            
+            for word in words:
+                test_line = current_line + (' ' + word if current_line else word)
+                if self.font.size(test_line)[0] <= self.text_area_width:
+                    current_line = test_line
+                else:
+                    if current_line:
+                        self.text_lines.append(current_line)
+                        current_line = word
+                    else:
+                        # 단일 단어가 너무 긴 경우 강제 분할
+                        while word and self.font.size(word)[0] > self.text_area_width:
+                            split_pos = max(1, len(word) * self.text_area_width // self.font.size(word)[0])
+                            self.text_lines.append(word[:split_pos])
+                            word = word[split_pos:]
+                        if word:
+                            current_line = word
+            
+            if current_line:
+                self.text_lines.append(current_line)
+        
+        # 빈 리스트 방지
+        if not self.text_lines:
+            self.text_lines = ['']
+            
+        # 스크롤을 맨 위로 초기화
+        self.scroll_y = 0
+        self.cursor_line = 0
+        self.cursor_pos = 0
 
 # --- 메인 인터페이스 ---
 

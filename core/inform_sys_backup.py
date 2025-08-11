@@ -13,6 +13,21 @@ import time
 load_dotenv()
 
 # Tesseract-OCR의 설치 경로를 지정
+import os
+import cv2
+import numpy as np
+from datetime import datetime
+import pytesseract
+from PIL import Image
+from dotenv import load_dotenv
+import requests
+import uuid
+import json
+import time
+
+load_dotenv()
+
+# Tesseract-OCR의 설치 경로를 지정
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
 class InformSystem:
@@ -27,10 +42,12 @@ class InformSystem:
         self.clova_secret = os.getenv("CLOVA_SECRET_KEY")
         self.use_clova = bool(self.clova_api_url and self.clova_secret)
         
-        if self.use_clova:
-            print("✅ Clova OCR 설정이 감지되었습니다.")
-        else:
-            print("⚠️ Clova OCR 설정이 없습니다. Tesseract OCR만 사용됩니다.")
+        # Clova OCR 설정
+        self.clova_api_url = os.getenv("CLOVA_API_URL")
+        self.clova_secret = os.getenv("CLOVA_SECRET_KEY")
+        self.use_clova = bool(self.clova_api_url and self.clova_secret)
+        
+        print(f"Clova OCR 사용 가능: {self.use_clova}")
 
     def process_capture(self, capture_info):
         frame = capture_info['frame']
@@ -101,11 +118,60 @@ class InformSystem:
         else:
             return cv2.equalizeHist(img)
 
-    def perform_clova_ocr(self, image_path):
-        """Clova OCR을 사용한 텍스트 추출"""
+    def clova_ocr(self, image_path):
+        """Clova OCR API를 사용한 텍스트 인식"""
         if not self.use_clova:
             return None
             
+        try:
+            headers = {"X-OCR-SECRET": self.clova_secret}
+            payload = {
+                "version": "V2",
+                "requestId": str(uuid.uuid4()),
+                "timestamp": int(time.time() * 1000),
+                "images": [{"format": "jpg", "name": "document"}]
+            }
+            
+            with open(image_path, "rb") as f:
+                files = [
+                    ("file", f),
+                    ("message", (None, json.dumps(payload), "application/json"))
+                ]
+                
+                response = requests.post(self.clova_api_url, headers=headers, files=files, timeout=30)
+            
+            if response.status_code == 200:
+                data = response.json()
+                texts = []
+                for image in data.get("images", []):
+                    for field in image.get("fields", []):
+                        text = field.get("inferText", "")
+                        if text.strip():
+                            texts.append(text.strip())
+                
+                result = " ".join(texts)
+                print(f"Clova OCR 결과: {len(result)}자")
+                return result if result.strip() else None
+            else:
+                print(f"Clova OCR API 오류: {response.status_code}")
+                return None
+                
+        except Exception as e:
+            print(f"Clova OCR 처리 중 오류: {e}")
+            return None
+
+    def apply_clahe(self, img):
+        """CLAHE (Contrast Limited Adaptive Histogram Equalization) 적용"""
+        clahe = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(8,8))
+        if len(img.shape) == 3:
+            img_yuv = cv2.cvtColor(img, cv2.COLOR_BGR2YUV)
+            img_yuv[:,:,0] = clahe.apply(img_yuv[:,:,0])
+            return cv2.cvtColor(img_yuv, cv2.COLOR_YUV2BGR)
+        else:
+            return clahe.apply(img)
+
+    def perform_clova_ocr(self, image_path):
+        """Clova OCR을 사용한 텍스트 추출"""
         try:
             headers = {"X-OCR-SECRET": self.clova_secret}
             payload = {
@@ -128,24 +194,34 @@ class InformSystem:
                     texts = []
                     for image in data.get("images", []):
                         for field in image.get("fields", []):
-                            text = field.get("inferText", "")
-                            if text.strip():
-                                texts.append(text.strip())
+                            texts.append(field.get("inferText", ""))
                     
                     result_text = " ".join(texts)
-                    print(f"✅ Clova OCR 성공: {len(result_text)}자 추출")
-                    return result_text if result_text.strip() else None
+                    print(f"Clova OCR 성공: {len(result_text)}자 추출")
+                    return result_text
                 else:
-                    print(f"❌ Clova OCR 실패: {response.status_code}")
+                    print(f"Clova OCR 실패: {response.status_code}")
                     return None
                     
         except Exception as e:
-            print(f"❌ Clova OCR 오류: {e}")
+            print(f"Clova OCR 오류: {e}")
             return None
 
-    def perform_tesseract_ocr(self, image_path):
-        """Tesseract OCR을 사용한 텍스트 추출 (개선된 전처리 포함)"""
+    def perform_ocr(self, image_path):
         try:
+            # 1. 먼저 Clova OCR 시도 (더 정확한 결과)
+            clova_result = self.clova_ocr(image_path)
+            if clova_result and len(clova_result.strip()) > 10:  # 충분한 텍스트가 인식되면
+                print(f"Clova OCR 사용: {len(clova_result)}자")
+                return clova_result
+            
+            print("Tesseract OCR로 대체 처리...")
+            
+            # 2. Tesseract OCR로 대체 처리
+            # 이미지 전처리 및 OCR 수행
+            import cv2
+            import numpy as np
+            
             # OpenCV로 이미지 읽기
             cv_image = cv2.imread(image_path)
             if cv_image is None:
@@ -154,76 +230,92 @@ class InformSystem:
             # 그레이스케일 변환
             gray = cv2.cvtColor(cv_image, cv2.COLOR_BGR2GRAY)
             
-            # 이미지 크기 확인 및 리사이징
+            # 이미지 크기 확인 및 리사이징 (너무 작으면 확대)
             height, width = gray.shape
             if height < 100 or width < 100:
+                # 이미지가 너무 작으면 2배 확대
                 gray = cv2.resize(gray, (width * 2, height * 2), interpolation=cv2.INTER_CUBIC)
                 print(f"이미지 크기 조정: {width}x{height} -> {width*2}x{height*2}")
             
-            # 다양한 전처리 방법 시도
-            preprocessing_methods = []
+            # 노이즈 제거
+            denoised = cv2.medianBlur(gray, 3)
+            
+            # 다양한 전처리 방법 적용
+            processed_images = []
             
             # 1. CLAHE 적용 (최고 성능 방법 중 하나)
-            clahe_img = self.apply_clahe(cv_image)
-            clahe_gray = cv2.cvtColor(clahe_img, cv2.COLOR_BGR2GRAY) if len(clahe_img.shape) == 3 else clahe_img
-            preprocessing_methods.append(("CLAHE", clahe_gray))
+            clahe_img = self.apply_clahe(cv2.cvtColor(gray, cv2.COLOR_GRAY2BGR))
+            clahe_gray = cv2.cvtColor(clahe_img, cv2.COLOR_BGR2GRAY)
+            processed_images.append(("CLAHE", clahe_gray))
             
             # 2. 히스토그램 평활화 적용 (최고 성능 방법)
-            hist_img = self.apply_histogram_equalization(cv_image)
-            hist_gray = cv2.cvtColor(hist_img, cv2.COLOR_BGR2GRAY) if len(hist_img.shape) == 3 else hist_img
-            preprocessing_methods.append(("히스토그램 평활화", hist_gray))
+            hist_img = self.apply_histogram_equalization(cv2.cvtColor(gray, cv2.COLOR_GRAY2BGR))
+            hist_gray = cv2.cvtColor(hist_img, cv2.COLOR_BGR2GRAY)
+            processed_images.append(("히스토그램 평활화", hist_gray))
             
             # 3. 적응적 이진화
-            denoised = cv2.medianBlur(gray, 3)
             adaptive_thresh = cv2.adaptiveThreshold(
                 denoised, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2
             )
-            preprocessing_methods.append(("적응적 이진화", adaptive_thresh))
+            processed_images.append(("적응적 이진화", adaptive_thresh))
             
             # 4. OTSU 이진화
             _, otsu_thresh = cv2.threshold(denoised, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-            preprocessing_methods.append(("OTSU 이진화", otsu_thresh))
+            processed_images.append(("OTSU 이진화", otsu_thresh))
             
             # 5. 원본 그레이스케일
-            preprocessing_methods.append(("원본", gray))
+            processed_images.append(("원본 그레이스케일", gray))
             
-            # 언어 설정
+            # 사용 가능한 언어 확인
             available_langs = pytesseract.get_languages()
-            lang_config = 'kor+eng' if 'kor' in available_langs else 'eng'
-            print(f"Tesseract 언어 설정: {lang_config}")
+            print(f"사용 가능한 언어: {available_langs}")
             
-            # 각 전처리 방법으로 OCR 시도
+            # 언어 설정 결정
+            if 'kor' in available_langs:
+                lang_config = 'kor+eng'  # 한국어+영어 조합으로 더 나은 결과
+                print("한국어+영어 OCR 사용")
+            elif 'kor+eng' in available_langs:
+                lang_config = 'kor+eng'
+                print("한국어+영어 OCR 사용")
+            else:
+                lang_config = 'eng'
+                print("영어 OCR 사용 (한국어 언어팩 없음)")
+            
+            # 여러 방법으로 OCR 시도
             results = []
+            
+            # 다양한 PSM 모드와 OEM 모드로 시도
             configs = [
                 ('--psm 6 --oem 3', '단일 텍스트 블록 + LSTM'),
                 ('--psm 4 --oem 3', '가변 크기 텍스트 + LSTM'),
                 ('--psm 3 --oem 3', '자동 페이지 분할 + LSTM'),
+                ('--psm 6 --oem 1', '단일 텍스트 블록 + Tesseract'),
             ]
             
-            for method_name, processed_img in preprocessing_methods:
-                pil_img = Image.fromarray(processed_img)
-                
+            for method_name, processed_img in processed_images:
                 for config, desc in configs:
                     try:
+                        pil_img = Image.fromarray(processed_img)
                         text = pytesseract.image_to_string(pil_img, lang=lang_config, config=config)
                         if text.strip():
-                            results.append((f"{method_name} + {desc}", text, len(text.strip())))
+                            results.append((f"{method_name} ({desc})", text.strip()))
                     except Exception as e:
+                        print(f"OCR 시도 실패 - {method_name} {desc}: {e}")
                         continue
             
             if not results:
                 return "[OCR 결과: 텍스트를 인식할 수 없습니다]"
             
-            # 가장 긴 결과 선택
-            best_result = max(results, key=lambda x: x[2])
-            method, text, length = best_result
+            # 가장 긴 결과 선택 (일반적으로 더 정확함)
+            best_result = max(results, key=lambda x: len(x[1]))
+            method, text = best_result
             
-            print(f"OCR 방법별 결과 (상위 3개):")
-            for i, (m, t, l) in enumerate(sorted(results, key=lambda x: x[2], reverse=True)[:3]):
-                print(f"  {i+1}. {m}: {l}자 - '{t.strip()[:50]}...'")
-            print(f"선택된 방법: {method} ({length}자)")
+            print(f"OCR 방법별 결과:")
+            for m, t in results[:5]:  # 상위 5개만 표시
+                print(f"  {m}: {len(t)}자 - '{t[:50]}...'")
+            print(f"선택된 방법: {method} ({len(text)}자)")
             
-            return text.strip()
+            return text if text else "[OCR 결과: 텍스트를 인식할 수 없습니다]"
             
         except pytesseract.TesseractNotFoundError:
             error_msg = "Tesseract가 설치되지 않았거나 경로가 설정되지 않았습니다."
@@ -232,18 +324,3 @@ class InformSystem:
         except Exception as e:
             print(f"OCR 처리 중 오류 발생: {e}")
             return f"[OCR 오류: {e}]"
-
-    def perform_ocr(self, image_path):
-        """통합 OCR 수행 (Clova OCR 우선, Tesseract OCR 대체)"""
-        # 1. 먼저 Clova OCR 시도
-        if self.use_clova:
-            print("🔍 Clova OCR 시도 중...")
-            clova_result = self.perform_clova_ocr(image_path)
-            if clova_result and len(clova_result.strip()) > 10:  # 충분한 텍스트가 인식되면
-                return clova_result
-            else:
-                print("Clova OCR 결과가 부족합니다. Tesseract OCR로 전환...")
-        
-        # 2. Tesseract OCR로 대체 처리
-        print("🔍 Tesseract OCR 시도 중...")
-        return self.perform_tesseract_ocr(image_path)
