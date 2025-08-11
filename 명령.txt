@@ -1,0 +1,9 @@
+data.yaml 예시
+train: C:\Users\jaemi\Documents\PythonFolder\yolov5-master\data\BookDataset\train\images
+val: C:\Users\jaemi\Documents\PythonFolder\yolov5-master\data\BookDataset\valid\images
+
+예시
+
+python train.py --img 640 --batch 3 --epochs 50 --data TrashDataset\data.yaml --cfg ./models/yolov5s.yaml --weights yolov5s.pt --name trash_yolov5s_results
+
+python .\detect.py --weigh .\runs\train\trash_yolov5s_results\weights\best.pt --img 640 --conf 0.5 --source 0
