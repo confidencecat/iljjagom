@@ -10,6 +10,82 @@
 사용자 입력 (텍스트/음성) → 문서 감지 → 이미지 캡처 → OCR 처리 → AI 분석 → 응답 생성 → 음성/텍스트 출력
 ```
 
+## 설치 및 설정
+
+### 1. 기본 환경 설정
+
+```bash
+# 저장소 클론
+git clone https://github.com/your-repo/iljjagom.git
+cd iljjagom
+
+# Python 가상환경 생성 (권장)
+python -m venv venv
+source venv/bin/activate  # Linux/Mac
+# 또는
+venv\Scripts\activate     # Windows
+
+# 의존성 설치
+pip install -r requirements.txt
+```
+
+### 2. Tesseract OCR 설치
+
+#### Windows
+1. [Tesseract OCR 다운로드](https://github.com/UB-Mannheim/tesseract/wiki)
+2. 설치 시 한국어 언어팩(kor.traineddata) 포함 선택
+3. 기본 설치 경로: `C:\Program Files\Tesseract-OCR\tesseract.exe`
+
+#### Linux/Mac
+```bash
+# Ubuntu/Debian
+sudo apt-get install tesseract-ocr tesseract-ocr-kor
+
+# macOS
+brew install tesseract tesseract-lang
+```
+
+### 3. API 키 설정
+
+프로젝트 루트에 `.env` 파일 생성:
+```bash
+OPENAI_API_KEY=your_openai_api_key_here
+GEMINI_API_KEY=your_gemini_api_key_here
+CLOVA_URL=your_clova_invoke_url_here
+CLOVA_API_KEY=your_clova_api_key_here
+```
+
+**API 키 발급 방법:**
+- **OpenAI API**: [OpenAI Platform](https://platform.openai.com/api-keys)에서 발급
+- **Google Gemini API**: [Google AI Studio](https://aistudio.google.com/app/apikey)에서 발급
+- **Naver Clova API**: [Naver Cloud Platform](https://www.ncloud.com/)에서 Clova Speech Recognition 서비스 생성 후 발급
+
+### 4. 커스텀 모델 다운로드
+
+YOLOv5 커스텀 훈련 모델이 필요합니다:
+```bash
+# 모델 파일 경로 확인
+runs/train/document_yolov5s_results/weights/best.pt
+```
+
+## 실행 방법
+
+### 기본 실행
+```bash
+python core/main.py        # 기본 카메라 (인덱스 0)
+python core/main.py 1      # 1번 카메라 사용
+python core/main.py 2      # 2번 카메라 사용
+```
+
+### 사용 과정
+1. **시작화면**: "질문하기" 버튼 클릭
+2. **입력 방식 선택**: 텍스트 또는 음성 선택
+3. **질문 입력**: 
+   - 텍스트: 직접 타이핑
+   - 음성: 시작→정지→완료 순서로 녹음
+4. **문서 촬영**: 카메라에 책/문서가 5초간 안정적으로 감지되면 자동 캡처
+5. **AI 응답 확인**: OCR 텍스트를 바탕으로 한 AI 답변 확인
+
 ## 파일 구조
 
 ```
@@ -173,88 +249,133 @@ class VoiceSystem:
 ### conversation/record.json 구조
 ```json
 {
-    "conversations": [
+    "total_conversations": 1,
+    "records": [
         {
             "id": 1,
-            "timestamp": "2024-08-11 13:45:23",
-            "input_method": "voice",
-            "user_question": "이 책의 주제가 뭐야?",
+            "timestamp": "2024-08-11T13:45:23",
+            "user_prompt": "이 책의 주제가 뭐야?",
+            "edited_prompt": "다음 OCR 텍스트를 참고하여... [사용자 질문: 이 책의 주제가 뭐야?]",
             "ai_response": "이 문서는 OCR 테스트에 관한 내용입니다...",
             "image_path": "conversation/image/capture_20240811_134523.jpg",
-            "ocr_path": "conversation/ocr/ocr_20240811_134523.txt", 
+            "ocr_text_path": "conversation/ocr/ocr_20240811_134523.txt", 
             "voice_path": "conversation/voice/recording_20240811_134523.wav"
         }
     ]
 }
 ```
 
-## 환경 설정
-
-### 필요한 API 키
-```bash
-# .env 파일에 설정
-OPENAI_API_KEY=your_openai_api_key
-GEMINI_API_KEY=your_gemini_api_key
-```
-
-### 주요 의존성
-- **YOLOv5**: 문서 감지
-- **OpenCV**: 이미지 처리 및 카메라 제어  
-- **Tesseract OCR**: 텍스트 추출 (한국어 언어팩 필요)
-- **Pygame**: GUI 인터페이스
-- **PyTorch**: YOLOv5 모델 실행
-- **OpenAI**: 음성 인식/합성
-- **Google Generative AI**: 텍스트 분석 및 응답
-
-### Tesseract 설정
-```python
-# Windows 환경
-pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
-# 한국어 언어팩 설치 필요: kor.traineddata
-```
-
-## 실행 방법
-
-### 기본 실행
-```bash
-python core/main.py
-```
-
-### 카메라 소스 지정
-```bash
-python core/main.py 1  # 1번 카메라 사용
-```
-
-## 시스템 플로우
-
-1. **시작**: 메인 애플리케이션 실행
-2. **입력 선택**: 사용자가 텍스트/음성 입력 방식 선택
-3. **문서 감지**: 카메라로 문서 실시간 감지 (5초 안정화)
-4. **이미지 처리**: 자동 캡처 및 OCR 텍스트 추출
-5. **AI 분석**: Gemini AI로 질문 분석 및 응답 생성
-6. **결과 출력**: 텍스트 또는 음성으로 응답 제공
-7. **기록 저장**: 모든 대화 내역 자동 저장
-
-## 성능 특징
+## 성능 특징 및 제한사항
 
 ### OCR 성능
 - **영어 텍스트**: 95% 이상 정확도
-- **한국어 텍스트**: 85% 이상 정확도 (글자 간격 이슈)
+- **한국어 텍스트**: 85% 이상 정확도 (글자 간격 문제 존재)
 - **혼합 텍스트**: 영어와 한국어 동시 인식 가능
 - **숫자/특수문자**: 높은 인식률
+- **최적 조건**: 명확한 폰트, 충분한 조명, 정면 촬영
 
 ### 문서 감지 성능
 - **감지 속도**: 실시간 (30fps)
 - **정확도**: 신뢰도 0.6 이상 필터링
 - **안정성**: 5초 연속 감지로 오감지 방지
+- **지원 문서**: 책, 논문, 프린트물 등
 
 ### AI 응답 품질
-- **한국어 자연어 처리**: 높은 품질
+- **한국어 자연어 처리**: Gemini 1.5 Flash 기반 높은 품질
 - **문맥 이해**: OCR 텍스트 기반 정확한 분석
-- **응답 속도**: 2-5초 내 응답 생성
+- **응답 속도**: 평균 2-5초
+- **토큰 제한**: 입력 최대 1M 토큰, 출력 최대 8K 토큰
+
+## 문제 해결
+
+### 일반적인 문제
+
+#### 1. Tesseract OCR 인식 오류
+```bash
+# 에러: tesseract가 설치되지 않음
+TesseractNotFoundError: tesseract is not installed
+
+# 해결책:
+# Windows: Tesseract OCR 재설치 및 PATH 확인
+# Linux: sudo apt-get install tesseract-ocr tesseract-ocr-kor
+```
+
+#### 2. 카메라 접근 오류
+```bash
+# 에러: 카메라를 찾을 수 없음
+Error: Cannot open camera
+
+# 해결책:
+python core/main.py 0  # 다른 카메라 인덱스 시도
+python core/main.py 1
+python core/main.py 2
+```
+
+#### 3. API 키 오류
+```bash
+# 에러: API 키가 유효하지 않음
+Error: Invalid API key
+
+# 해결책:
+# 1. .env 파일 존재 확인
+# 2. API 키 형식 확인 (따옴표 없이 입력)
+# 3. API 키 유효성 확인
+```
+
+#### 4. 모델 파일 누락
+```bash
+# 에러: 모델 파일을 찾을 수 없음
+FileNotFoundError: runs/train/document_yolov5s_results/weights/best.pt
+
+# 해결책:
+# 1. 모델 파일 다운로드 또는 복사
+# 2. 경로 확인
+# 3. 기본 YOLOv5s 모델 사용: yolov5s.pt
+```
+
+### 성능 최적화 팁
+
+#### OCR 성능 향상
+1. **조명**: 균등하고 충분한 조명 사용
+2. **각도**: 문서를 정면에서 촬영
+3. **거리**: 문서가 화면의 70% 이상 차지하도록 조정
+
+#### 음성 인식 성능 향상
+1. **환경**: 조용한 환경에서 녹음
+2. **거리**: 마이크에서 30cm 이내
+3. **속도**: 천천히 명확하게 발음
+4. **길이**: 최소 1초 이상 녹음
+
+## 개발 정보
+
+### 시스템 요구사항
+- **운영체제**: Windows 10+, macOS 10.15+, Ubuntu 18.04+
+- **Python**: 3.8 이상
+- **메모리**: 최소 4GB RAM (8GB 권장)
+- **저장공간**: 최소 2GB (모델 및 대화 기록 포함)
+- **카메라**: 웹캠 또는 외장 카메라
+
+### 의존성 버전
+- **torch**: 2.0.0+
+- **opencv-python**: 4.8.0+
+- **pygame**: 2.5.0+
+- **pytesseract**: 0.3.10+
+- **openai**: 1.0.0+
+- **google-generativeai**: 0.3.0+
+
+### 라이선스
+MIT License - 자세한 내용은 LICENSE 파일 참조
 
 ## 향후 개선 사항
 
+### 단기 목표 (v2.0)
 1. **OCR 정확도 향상**: 한국어 글자 간격 문제 해결
-2. **인터페이스 수정**: 설정 기능 및 깔끔한 인터페이스
-3. **기억 능력, 검색 능력**: 기억력을 추가하여 이어지는 대화 가능하도록 수정
+2. **UI/UX 개선**: 더 직관적인 인터페이스 설계
+3. **설정 기능**: 카메라, OCR, AI 모델 설정 옵션
+4. **다국어 지원**: 영어, 일본어, 중국어 추가
+
+### 장기 목표 (v3.0)
+1. **대화 기억 기능**: 이전 대화 맥락을 기억하는 연속 대화
+2. **문서 검색 기능**: 과거 OCR 텍스트에서 키워드 검색
+3. **클라우드 동기화**: 여러 기기 간 대화 기록 동기화
+4. **모바일 앱**: Android/iOS 앱 개발
