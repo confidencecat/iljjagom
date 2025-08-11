@@ -19,7 +19,9 @@
 /conversation/voice/
 /conversation/*.json
 
-/test_code/
+/test_code/*.py
+/test_code/*/*.py
+/test_code/*/*.txt
 
 *.mp4
 *.mov
