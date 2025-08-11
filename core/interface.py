@@ -385,6 +385,8 @@ class ReadAIInterface:
             self.ai_response = ""
             if hasattr(self, 'voice_file_path'):
                 self.voice_file_path = None
+            # 텍스트 입력창 초기화
+            self.text_input.set_text("")
             self.current_screen = "start"
 
     def process_question(self):

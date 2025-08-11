@@ -144,85 +144,41 @@ class InformSystem:
             return None
 
     def perform_tesseract_ocr(self, image_path):
-        """Tesseract OCR을 사용한 텍스트 추출 (개선된 전처리 포함)"""
+        """Tesseract OCR을 사용한 텍스트 추출 (CLAHE 전처리만 적용)"""
         try:
             # OpenCV로 이미지 읽기
             cv_image = cv2.imread(image_path)
             if cv_image is None:
                 return "[OCR 오류: 이미지를 읽을 수 없습니다]"
             
-            # 그레이스케일 변환
-            gray = cv2.cvtColor(cv_image, cv2.COLOR_BGR2GRAY)
-            
             # 이미지 크기 확인 및 리사이징
-            height, width = gray.shape
+            height, width = cv_image.shape[:2]
             if height < 100 or width < 100:
-                gray = cv2.resize(gray, (width * 2, height * 2), interpolation=cv2.INTER_CUBIC)
-                print(f"이미지 크기 조정: {width}x{height} -> {width*2}x{height*2}")
+                scale_factor = max(100 / height, 100 / width)
+                new_width = int(width * scale_factor)
+                new_height = int(height * scale_factor)
+                cv_image = cv2.resize(cv_image, (new_width, new_height), interpolation=cv2.INTER_CUBIC)
+                print(f"이미지 크기 조정: {width}x{height} -> {new_width}x{new_height}")
             
-            # 다양한 전처리 방법 시도
-            preprocessing_methods = []
-            
-            # 1. CLAHE 적용 (최고 성능 방법 중 하나)
+            # CLAHE 적용
             clahe_img = self.apply_clahe(cv_image)
-            clahe_gray = cv2.cvtColor(clahe_img, cv2.COLOR_BGR2GRAY) if len(clahe_img.shape) == 3 else clahe_img
-            preprocessing_methods.append(("CLAHE", clahe_gray))
+            clahe_gray = cv2.cvtColor(clahe_img, cv2.COLOR_BGR2GRAY)
             
-            # 2. 히스토그램 평활화 적용 (최고 성능 방법)
-            hist_img = self.apply_histogram_equalization(cv_image)
-            hist_gray = cv2.cvtColor(hist_img, cv2.COLOR_BGR2GRAY) if len(hist_img.shape) == 3 else hist_img
-            preprocessing_methods.append(("히스토그램 평활화", hist_gray))
-            
-            # 3. 적응적 이진화
-            denoised = cv2.medianBlur(gray, 3)
-            adaptive_thresh = cv2.adaptiveThreshold(
-                denoised, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2
-            )
-            preprocessing_methods.append(("적응적 이진화", adaptive_thresh))
-            
-            # 4. OTSU 이진화
-            _, otsu_thresh = cv2.threshold(denoised, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-            preprocessing_methods.append(("OTSU 이진화", otsu_thresh))
-            
-            # 5. 원본 그레이스케일
-            preprocessing_methods.append(("원본", gray))
+            # PIL 이미지로 변환
+            pil_img = Image.fromarray(clahe_gray)
             
             # 언어 설정
             available_langs = pytesseract.get_languages()
             lang_config = 'kor+eng' if 'kor' in available_langs else 'eng'
             print(f"Tesseract 언어 설정: {lang_config}")
             
-            # 각 전처리 방법으로 OCR 시도
-            results = []
-            configs = [
-                ('--psm 6 --oem 3', '단일 텍스트 블록 + LSTM'),
-                ('--psm 4 --oem 3', '가변 크기 텍스트 + LSTM'),
-                ('--psm 3 --oem 3', '자동 페이지 분할 + LSTM'),
-            ]
+            # OCR 수행
+            text = pytesseract.image_to_string(pil_img, lang=lang_config, config='--psm 6 --oem 3')
             
-            for method_name, processed_img in preprocessing_methods:
-                pil_img = Image.fromarray(processed_img)
-                
-                for config, desc in configs:
-                    try:
-                        text = pytesseract.image_to_string(pil_img, lang=lang_config, config=config)
-                        if text.strip():
-                            results.append((f"{method_name} + {desc}", text, len(text.strip())))
-                    except Exception as e:
-                        continue
-            
-            if not results:
+            if not text.strip():
                 return "[OCR 결과: 텍스트를 인식할 수 없습니다]"
             
-            # 가장 긴 결과 선택
-            best_result = max(results, key=lambda x: x[2])
-            method, text, length = best_result
-            
-            print(f"OCR 방법별 결과 (상위 3개):")
-            for i, (m, t, l) in enumerate(sorted(results, key=lambda x: x[2], reverse=True)[:3]):
-                print(f"  {i+1}. {m}: {l}자 - '{t.strip()[:50]}...'")
-            print(f"선택된 방법: {method} ({length}자)")
-            
+            print(f"✅ Tesseract OCR 성공: {len(text.strip())}자 추출")
             return text.strip()
             
         except pytesseract.TesseractNotFoundError:
@@ -233,6 +189,22 @@ class InformSystem:
             print(f"OCR 처리 중 오류 발생: {e}")
             return f"[OCR 오류: {e}]"
 
+    def perform_ocr(self, image_path):
+        """통합 OCR 수행 (Clova OCR 우선, Tesseract OCR 대체)"""
+        # 1. 먼저 Clova OCR 시도
+        if self.use_clova:
+            print("🔍 Clova OCR 시도 중...")
+            clova_result = self.perform_clova_ocr(image_path)
+            if clova_result and len(clova_result.strip()) > 10:  # 충분한 텍스트가 인식되면
+                return clova_result
+            else:
+                print("Clova OCR 결과가 부족합니다. Tesseract OCR로 전환...")
+        
+        # 2. Tesseract OCR로 대체 처리
+        print("🔍 Tesseract OCR 시도 중...")
+        return self.perform_tesseract_ocr(image_path)
+    
+    
     def perform_ocr(self, image_path):
         """통합 OCR 수행 (Clova OCR 우선, Tesseract OCR 대체)"""
         # 1. 먼저 Clova OCR 시도
