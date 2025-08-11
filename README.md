@@ -152,6 +152,24 @@ class ReadAIInterface:
 - 텍스트 자동 줄바꿈 및 스크롤 기능
 - 실시간 음성 녹음 시각적 피드백
 
+#### 시작 화면
+![시작 화면](./readme_data/Version01_인터페이스_시작-화면.png)
+
+#### 질문 방법 선택 화면
+![질문 선택 화면](./readme_data/Version01_인터페이스_질문-선택-화면.png)
+
+#### 질문(텍스트) 입력 화면
+![텍스트 입력 화면](./readme_data/Version01_인터페이스_텍스트-입력-화면.png)
+
+#### 질문(음성) 입력 화면
+![음성 입력 화면](./readme_data/Version01_인터페이스_음성-입력-화면.png)
+
+#### YOLOv5 detect 대기 화면
+![YOLOv5-detect 화면](./readme_data/Version01_인터페이스_YOLOv5-detect-화면.png)
+
+#### AI 응답 화면
+![AI 응답 화면](./readme_data/Version01_인터페이스_AI-응답-화면.png)
+
 ### 3. detect_sys.py - 문서 감지 시스템
 
 ```python
