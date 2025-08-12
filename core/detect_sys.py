@@ -22,16 +22,16 @@ from utils.augmentations import letterbox
 
 class BookDetector:
     def __init__(self, inform_system, weights=None, data='data/coco128.yaml', device='', half=False, camera_source=0):
-        # 커스텀 훈련된 문서 감지 모델을 기본값으로 사용
+        
         if weights is None:
             custom_weights = 'runs/train/document_yolov5s_results/weights/best.pt'
             if os.path.exists(custom_weights):
                 weights = custom_weights
-                print(f"✅ 커스텀 문서 감지 모델을 사용합니다: {weights}")
+                print(f"문서 감지 모델을 사용합니다: {weights}")
             else:
                 weights = 'yolov5s.pt'
-                print(f"⚠️ 커스텀 모델을 찾을 수 없습니다: {custom_weights}")
-                print("기본 YOLOv5s 모델을 사용합니다.")
+                print(f"문서 감지 모델을 찾을 수 없습니다: {custom_weights}")
+                sys.exit()
         
         self.device = select_device(device)
         self.model = DetectMultiBackend(weights, device=self.device, dnn=False, data=data, fp16=half)
@@ -41,6 +41,10 @@ class BookDetector:
         self.camera_source = camera_source
 
     def run(self, source=None, conf_thres=0.6, iou_thres=0.45, max_det=1000, classes=None, agnostic_nms=False):
+        # classes 인자 처리
+        if classes is not None and isinstance(classes, list):
+            classes = [int(c) for c in classes]
+        
         try:
             if source is None:
                 source = str(self.camera_source)
@@ -142,10 +146,10 @@ class BookDetector:
 
             key = cv2.waitKey(1) & 0xFF
             if key == 27:  # ESC
-                print("사용자가 ESC를 눌러 감지를 중단했습니다.")
+                print("사용자가 ESC를 눌러 감지를 중단")
                 break
             elif cv2.getWindowProperty('Book Detection', cv2.WND_PROP_VISIBLE) < 1:
-                print("카메라 창이 닫혀 감지를 중단했습니다.")
+                print("카메라 창이 닫혀 감지를 중단.")
                 break
         
         cap.release()

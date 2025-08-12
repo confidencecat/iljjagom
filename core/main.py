@@ -1,7 +1,7 @@
 import sys
 import os
 
-# 프로젝트 루트 디렉토리를 sys.path에 추가
+
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 import pygame
@@ -18,8 +18,8 @@ class MainApp:
         self.conversation_file = "conversation/record.json"
         self.camera_source = camera_source
         self.initialize_records()
+        
 
-        # Initialize systems
         self.ai_system = AISystem()
         self.inform_system = InformSystem()
         self.book_detector = BookDetector(inform_system=self.inform_system, camera_source=camera_source)
@@ -36,9 +36,6 @@ class MainApp:
         if not os.path.exists(self.conversation_file):
             with open(self.conversation_file, 'w', encoding='utf-8') as f:
                 json.dump({"total_conversations": 0, "records": []}, f, indent=4)
-
-    def run(self):
-        self.interface.run()
 
     def save_conversation(self, user_prompt, edited_prompt, ai_response, image_path=None, ocr_path=None, voice_path=None):
         try:
@@ -67,16 +64,28 @@ class MainApp:
 
 
 if __name__ == '__main__':
-    import sys
+    import argparse
+
+    parser = argparse.ArgumentParser(description="일짜곰 메인 애플리케이션")
+    parser.add_argument('--source', type=int, default=0, help='카메라 소스 인덱스 (기본값: 0)')
+    parser.add_argument('--conf_thres', type=float, default=0.6, help='감지 신뢰도 임계값 (기본값: 0.6)')
+    parser.add_argument('--iou_thres', type=float, default=0.45, help='NMS IoU 임계값 (기본값: 0.45)')
+    parser.add_argument('--max_det', type=int, default=1, help='이미지당 최대 감지 개수 (기본값: 1)')
+    parser.add_argument('--classes', type=int, nargs='*', default=None, help='감지할 클래스 필터: --classes 0 또는 --classes 0 2 3')
+    parser.add_argument('--agnostic_nms', action='store_true', help='클래스 무관 NMS 사용')
+
+    args = parser.parse_args()
+
+    print(f"카메라 소스 설정: {args.source}")
+
+    app = MainApp(camera_source=args.source)
     
-    # 카메라 소스를 명령줄 인자로 받을 수 있도록 설정
-    camera_source = 0
-    if len(sys.argv) > 1:
-        try:
-            camera_source = int(sys.argv[1])
-            print(f"카메라 소스 설정: {camera_source}")
-        except ValueError:
-            print(f"잘못된 카메라 소스: {sys.argv[1]}, 기본값 0 사용")
-    
-    app = MainApp(camera_source=camera_source)
-    app.run()
+    app.interface.detect_run_args = {
+        'source': args.source,
+        'conf_thres': args.conf_thres,
+        'iou_thres': args.iou_thres,
+        'max_det': args.max_det,
+        'classes': args.classes,
+        'agnostic_nms': args.agnostic_nms
+    }
+    app.interface.run()
