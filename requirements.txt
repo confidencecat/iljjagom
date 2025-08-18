@@ -48,7 +48,7 @@ pyasn1==0.6.1
 pyasn1_modules==0.4.2
 PyAudio==0.2.14
 pydantic==2.11.7
-pydantic_core==2.33.2
+pydantic_core==2.39.0
 pygame==2.6.1
 pyparsing==3.2.3
 pytesseract==0.3.13
