@@ -7,21 +7,19 @@
 *.tif
 *.tiff
 *.heic
+*.mp3
+*.wav
 
 # But DO NOT ignore images inside the readme_data folder
-!/readme_data/
-!/readme_data/**
+!readme_data/
+!readme_data/**
 
 # Generated data from conversation
 
-/conversation/image/
-/conversation/ocr/
-/conversation/voice/
-/conversation/*.json
+conversation/
 
-/test_code/*.py
-/test_code/*/*.py
-/test_code/*/*.txt
+test_code/
+
 
 *.mp4
 *.mov
