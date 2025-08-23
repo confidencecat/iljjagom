@@ -2,7 +2,7 @@ import os
 import json
 import google.generativeai as genai
 from dotenv import load_dotenv
-from config import CONFIG_JUDGE_FINE_TUNING
+from core.config import CONFIG_JUDGE_FINE_TUNING
 
 load_dotenv()
 
@@ -45,9 +45,12 @@ class AISystem:
     def judge_question(self, user_question):
         prompt = f"{user_question}\n\n위 질문에 답하기 위해 책의 내용이 필요하면 'True', 필요하지 않으면 'False'를 출력하세요. 오직 'True' 또는 'False'만 출력해야 합니다."
         response = self._AI(prompt, fine_tuning=self.judge_fine_tuning)
-        
         print(f"질문 분석 결과: {response}")
-        return "true" in response.lower()
+        resp = (response or "").strip().lower()
+        if resp not in ("true", "false"):
+            return False 
+        return resp == "true"
+
 
     def create_prompt(self, user_question, ocr_text=None):
         if ocr_text:

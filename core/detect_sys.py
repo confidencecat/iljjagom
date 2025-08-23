@@ -71,6 +71,7 @@ class BookDetector:
 
         print(f"감지 가능한 클래스: {self.names}")
         print("문서/책을 카메라 앞에 놓아주세요...")
+        print(" =======================================")
 
         while cap.isOpened():
             ret, frame = cap.read()
@@ -100,7 +101,7 @@ class BookDetector:
 
                     for *xyxy, conf, cls in reversed(det):
                         class_name = self.names[int(cls)]
-                        print(f"감지된 객체: {class_name} (신뢰도: {conf:.2f})")
+                        print(f"|| 감지된 객체: {class_name} (신뢰도: {conf:.2f}) ||", end='\r')
                         
                         # 'document' 클래스이고 신뢰도가 0.6 이상인 경우만 처리
                         if class_name.lower() == 'document' and conf >= 0.6:
@@ -115,6 +116,8 @@ class BookDetector:
                             # 안정성 체크
                             if stable_bbox and self.is_stable(stable_bbox, current_bbox):
                                 if time.time() - detection_start_time >= STABILITY_SECONDS:
+                                    print()
+                                    print(" =======================================")
                                     print("안정적인 문서 감지 완료. 캡처 및 처리 시작.")
                                     cap.release()
                                     cv2.destroyAllWindows()
@@ -122,7 +125,7 @@ class BookDetector:
                             else:
                                 stable_bbox = current_bbox
                                 detection_start_time = time.time()
-                                print(f"문서 감지 시작... ({STABILITY_SECONDS}초 대기)")
+                                print(f"|| 문서 감지 시작... ({STABILITY_SECONDS:>9.1f}초 대기) ||", end='\r')
                             
                             break  # 가장 확률 높은 문서 하나만 처리
             
@@ -155,6 +158,8 @@ class BookDetector:
         cap.release()
         cv2.destroyAllWindows()
         print("감지 종료.")
+        print()
+        print(" =======================================")
         return None
 
     def is_stable(self, prev_box, curr_box, iou_threshold=0.7, center_threshold=30):
