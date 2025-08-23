@@ -1,11 +1,24 @@
 
 
 COLORS = {
-    'WHITE': (255, 255, 255), 'BLACK': (0, 0, 0), 'GRAY': (128, 128, 128),
-    'LIGHT_GRAY': (200, 200, 200), 'BLUE': (0, 100, 200), 'GREEN': (0, 150, 0),
-    'RED': (200, 0, 0), 'DARK_BLUE': (0, 50, 100), 'DARK_GREEN': (0, 100, 0),
+    'WHITE': (255, 255, 255),
+    'BLACK': (0, 0, 0),
+    'GRAY': (180, 180, 180),
+    'LIGHT_GRAY': (212, 199, 180),
+    'BLUE': (70, 130, 180),
+    'GREEN': (60, 179, 113),
+    'RED': (220, 80, 80),
+    'YELLOW': (255, 244, 199),  # 더 진한 노란색 배경
+    'BROWN': (209, 165, 100),    # 버튼용 갈색
+    'LIGHT_BROWN': (222, 185, 133), # 오버레이용 연한 갈색
+    'RED_BROWN': (186, 99, 71),  # 완료 버튼용 붉은 연한 갈색
+    'DARK_BLUE': (0, 50, 100),
+    'DARK_GREEN': (0, 100, 0),
     'DARK_RED': (150, 0, 0)
 }
+
+print(COLORS)
+
 SCREEN_WIDTH, SCREEN_HEIGHT = 1200, 800
 
 BUTTON_FONT_SIZE = 28

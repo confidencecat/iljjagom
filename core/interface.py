@@ -12,7 +12,6 @@ def get_korean_font(size):
     font_paths = [
         "C:/Windows/Fonts/malgun.ttf", "C:/Windows/Fonts/NanumGothic.ttf",
         "C:/Windows/Fonts/gulim.ttc", "C:/Windows/Fonts/batang.ttc",
-        "C:/Windows/Fonts/dotum.ttc",
     ]
     for font_path in font_paths:
         if Path(font_path).exists():
@@ -31,8 +30,9 @@ class Button:
 
     def draw(self, screen):
         color = tuple(min(255, c + 30) for c in self.color) if self.is_hovered else self.color
-        pygame.draw.rect(screen, color, self.rect)
-        pygame.draw.rect(screen, COLORS['BLACK'], self.rect, 2)
+        # 끝이 둥근 직사각형 버튼
+        pygame.draw.rect(screen, color, self.rect, border_radius=24)
+        pygame.draw.rect(screen, COLORS['BLACK'], self.rect, 2, border_radius=24)
         text_surface = self.font.render(self.text, True, self.text_color)
         text_rect = text_surface.get_rect(center=self.rect.center)
         screen.blit(text_surface, text_rect)
@@ -235,10 +235,10 @@ class TextInputBox:
             self.cursor_timer = 0
 
     def draw(self, screen):
-        # 텍스트 영역 그리기
+        # 텍스트 영역 그리기 (끝이 둥근 직사각형)
         text_rect = pygame.Rect(self.rect.x, self.rect.y, self.rect.width - self.scrollbar_width, self.rect.height)
-        pygame.draw.rect(screen, COLORS['WHITE'], text_rect)
-        pygame.draw.rect(screen, COLORS['BLACK'], text_rect, 2)
+        pygame.draw.rect(screen, COLORS['WHITE'], text_rect, border_radius=20)
+        pygame.draw.rect(screen, COLORS['BLACK'], text_rect, 2, border_radius=20)
 
         # 텍스트 렌더링
         visible_lines = self.text_lines[self.scroll_y:self.scroll_y + self.max_visible_lines]
@@ -259,21 +259,20 @@ class TextInputBox:
         if len(self.text_lines) > self.max_visible_lines:
             scrollbar_rect = pygame.Rect(self.rect.right - self.scrollbar_width, self.rect.y, 
                                        self.scrollbar_width, self.rect.height)
-            pygame.draw.rect(screen, COLORS['LIGHT_GRAY'], scrollbar_rect)
-            pygame.draw.rect(screen, COLORS['BLACK'], scrollbar_rect, 1)
+            pygame.draw.rect(screen, COLORS['LIGHT_GRAY'], scrollbar_rect, border_radius=12)
+            pygame.draw.rect(screen, COLORS['BLACK'], scrollbar_rect, 1, border_radius=12)
 
             # 스크롤 핸들
             total_lines = len(self.text_lines)
             handle_height = max(20, int(self.rect.height * self.max_visible_lines / total_lines))
-            # 스크롤이 끝까지 안내려가는 문제 보정
             max_scroll = max(1, total_lines - self.max_visible_lines)
             handle_y = (self.rect.y + 
                        int((self.rect.height - handle_height) * self.scroll_y / max_scroll))
 
             handle_rect = pygame.Rect(scrollbar_rect.x + 2, handle_y, 
                                     self.scrollbar_width - 4, handle_height)
-            pygame.draw.rect(screen, COLORS['GRAY'], handle_rect)
-            pygame.draw.rect(screen, COLORS['BLACK'], handle_rect, 1)
+            pygame.draw.rect(screen, COLORS['GRAY'], handle_rect, border_radius=8)
+            pygame.draw.rect(screen, COLORS['BLACK'], handle_rect, 1, border_radius=8)
 
     def get_text(self): 
         return '\n'.join(self.text_lines)
@@ -592,9 +591,9 @@ class ReadAIInterface:
             self.loading_message = ""
 
     def draw_loading(self):
-        # semi-transparent overlay
+        # 연한 갈색 반투명 오버레이
         overlay = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
-        overlay.fill((0,0,0,150))
+        overlay.fill(COLORS['LIGHT_BROWN'])
         self.screen.blit(overlay, (0,0))
 
         dots = (self._loading_tick // 10) % 4
@@ -604,18 +603,19 @@ class ReadAIInterface:
         self.screen.blit(surf, rect)
 
     def setup_ui(self):
+        # 버튼 색상 통일: '뒤로'는 GRAY, '종료'는 RED, '완료'는 RED_BROWN, 나머지는 BROWN
         self.buttons = {
-            'ask': Button(SCREEN_WIDTH//2 - 100, SCREEN_HEIGHT//2, 200, 50, "질문하기"),
-            'exit': Button(SCREEN_WIDTH - 120, SCREEN_HEIGHT - 60, 100, 40, "종료", COLORS['RED']),
-            'text': Button(SCREEN_WIDTH//2 - 220, SCREEN_HEIGHT//2, 180, 50, "텍스트"),
-            'voice': Button(SCREEN_WIDTH//2 + 40, SCREEN_HEIGHT//2, 180, 50, "음성", COLORS['GREEN']),
-            'submit': Button(SCREEN_WIDTH//2 - 50, SCREEN_HEIGHT - 80, 100, 40, "완료"),
+            'ask': Button(SCREEN_WIDTH//2 - 100, SCREEN_HEIGHT//2, 200, 50, "질문하기", COLORS['BROWN']),
+            'exit': Button(SCREEN_WIDTH - 120, SCREEN_HEIGHT - 60, 100, 40, "종료", COLORS['RED_BROWN']),
+            'text': Button(SCREEN_WIDTH//2 - 220, SCREEN_HEIGHT//2, 180, 50, "텍스트", COLORS['BROWN']),
+            'voice': Button(SCREEN_WIDTH//2 + 40, SCREEN_HEIGHT//2, 180, 50, "음성", COLORS['BROWN']),
+            'submit': Button(SCREEN_WIDTH//2 - 50, SCREEN_HEIGHT - 80, 100, 40, "완료", COLORS['RED_BROWN']),
             'back': Button(50, SCREEN_HEIGHT - 80, 100, 40, "뒤로", COLORS['GRAY']),
-            'v_start': Button(SCREEN_WIDTH//2 - 180, SCREEN_HEIGHT//2, 100, 50, "시작", COLORS['GREEN']),
-            'v_stop': Button(SCREEN_WIDTH//2 - 50, SCREEN_HEIGHT//2, 100, 50, "정지", COLORS['RED']),
-            'v_complete': Button(SCREEN_WIDTH//2 + 80, SCREEN_HEIGHT//2, 100, 50, "완료"),
-            'resp_ok': Button(SCREEN_WIDTH - 220, SCREEN_HEIGHT - 60, 100, 40, "완료"),
-            'tts_play': Button(SCREEN_WIDTH - 110, SCREEN_HEIGHT - 60, 100, 40, "듣기", COLORS['GREEN'])
+            'v_start': Button(SCREEN_WIDTH//2 - 180, SCREEN_HEIGHT//2, 100, 50, "시작", COLORS['BROWN']),
+            'v_stop': Button(SCREEN_WIDTH//2 - 50, SCREEN_HEIGHT//2, 100, 50, "정지", COLORS['BROWN']),
+            'v_complete': Button(SCREEN_WIDTH//2 + 80, SCREEN_HEIGHT//2, 100, 50, "완료", COLORS['RED_BROWN']),
+            'resp_ok': Button(SCREEN_WIDTH - 220, SCREEN_HEIGHT - 60, 100, 40, "완료", COLORS['RED_BROWN']),
+            'tts_play': Button(SCREEN_WIDTH - 110, SCREEN_HEIGHT - 60, 100, 40, "듣기", COLORS['BROWN'])
         }
         self.text_input = TextInputBox(50, 150, SCREEN_WIDTH - 100, SCREEN_HEIGHT - 250)
         self.response_display = TextInputBox(50, 150, SCREEN_WIDTH - 100, SCREEN_HEIGHT - 250, editable=False)
@@ -747,7 +747,8 @@ class ReadAIInterface:
             self._auto_played = True
 
     def draw_screen(self):
-        self.screen.fill(COLORS['WHITE'])
+        # 배경을 연한 노란색으로
+        self.screen.fill(COLORS['YELLOW'])
         draw_funcs = {
             "start": self.draw_start, "question_method": self.draw_method,
             "text_input": self.draw_text, "voice_input": self.draw_voice,
