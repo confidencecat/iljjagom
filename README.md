@@ -6,11 +6,11 @@
 
 ## 주요 기능
 
-- **실시간 도서 인식**: YOLOv5 모델을 사용하여 카메라 영상에서 책(문서)을 실시간으로 탐지합니다.
-- **자동 OCR 캡처**: 책이 5초 이상 안정적으로 감지되면 자동으로 해당 부분을 캡처하여 Clova OCR로 텍스트를 추출합니다.
-- **다양한 질문 방식**: 텍스트 또는 음성으로 자유롭게 질문할 수 있습니다.
-- **AI 답변**: Google Gemini의 언어 모델을 통해 사용자의 질문에 대한 답변을 생성합니다.
-- **음성 답변 (TTS)**: 생성된 AI의 답변을 음성으로 들을 수 있습니다.
+- **실시간 도서 인식 (YOLOv5)**: YOLOv5 모델을 사용하여 카메라 영상에서 책(문서)을 실시간으로 탐지합니다.
+- **자동 텍스트 추출 (Clova OCR)**: 책이 5초 이상 안정적으로 감지되면 자동으로 해당 부분을 캡처하여 Clova OCR로 텍스트를 추출합니다.
+- **음성 질문 인식 (OpenAI Whisper)**: OpenAI의 Whisper 모델을 사용하여 사용자의 음성을 텍스트로 정확하게 변환합니다.
+- **AI 텍스트 답변 (Google Gemini)**: Google의 Gemini 언어 모델을 통해 사용자의 질문에 대한 답변을 생성합니다.
+- **AI 음성 답변 (OpenAI TTS)**: OpenAI의 TTS 모델을 사용하여 생성된 AI의 답변을 자연스러운 음성으로 들을 수 있습니다.
 
 ## 시스템 요구사항
 
@@ -44,19 +44,23 @@
 
 ## `.env` 환경 변수 설정
 
-프로젝트를 실행하려면 API 키 설정이 필요합니다. 프로젝트 루트 디렉터리에 `.env` 파일을 생성하고 아래 내용을 채우세요.
+프로젝트를 실행하려면 3가지 서비스의 API 키 설정이 필요합니다. 프로젝트 루트 디렉터리에 `.env` 파일을 생성하고 아래 내용을 모두 채워주세요.
 
 ```env
 # Naver Cloud Platform의 Clova OCR API 정보
 CLOVA_API_URL=YOUR_CLOVA_OCR_API_URL
 CLOVA_SECRET_KEY=YOUR_CLOVA_OCR_SECRET_KEY
 
-# Google AI Studio에서 발급받은 Gemini API 키
+# Google AI Studio에서 발급받은 Gemini API 키 (AI 텍스트 답변용)
 GEMINI_API_KEY=YOUR_GEMINI_API_KEY
+
+# OpenAI API 키 (음성 인식 및 음성 합성용)
+OPENAI_API_KEY=YOUR_OPENAI_API_KEY
 ```
 
--   `CLOVA_API_URL`, `CLOVA_SECRET_KEY`: [Naver Cloud Platform](https://www.ncloud.com/)에서 Clova OCR 서비스를 신청하고 발급받은 API Gateway URL과 Secret Key를 입력합니다.
--   `GEMINI_API_KEY`: [Google AI Studio](https://aistudio.google.com/app/apikey)에서 발급받은 API 키를 입력합니다.
+-   `CLOVA_API_URL`, `CLOVA_SECRET_KEY`: [Naver Cloud Platform](https://www.ncloud.com/)에서 **Clova OCR** 서비스를 신청하고 발급받은 API 정보를 입력합니다.
+-   `GEMINI_API_KEY`: [Google AI Studio](https://aistudio.google.com/app/apikey)에서 **Gemini** API 키를 발급받아 입력합니다.
+-   `OPENAI_API_KEY`: [OpenAI Platform](https://platform.openai.com/)에서 **Whisper (STT)**와 **TTS**를 위한 API 키를 발급받아 입력합니다.
 
 ## 실행 방법
 
