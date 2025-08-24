@@ -9,7 +9,7 @@
 - **실시간 도서 인식**: YOLOv5 모델을 사용하여 카메라 영상에서 책(문서)을 실시간으로 탐지합니다.
 - **자동 OCR 캡처**: 책이 5초 이상 안정적으로 감지되면 자동으로 해당 부분을 캡처하여 Clova OCR로 텍스트를 추출합니다.
 - **다양한 질문 방식**: 텍스트 또는 음성으로 자유롭게 질문할 수 있습니다.
-- **AI 답변**: OpenAI의 언어 모델을 통해 사용자의 질문에 대한 답변을 생성합니다.
+- **AI 답변**: Google Gemini의 언어 모델을 통해 사용자의 질문에 대한 답변을 생성합니다.
 - **음성 답변 (TTS)**: 생성된 AI의 답변을 음성으로 들을 수 있습니다.
 
 ## 시스템 요구사항
@@ -51,12 +51,12 @@
 CLOVA_API_URL=YOUR_CLOVA_OCR_API_URL
 CLOVA_SECRET_KEY=YOUR_CLOVA_OCR_SECRET_KEY
 
-# OpenAI API 키
-OPENAI_API_KEY=YOUR_OPENAI_API_KEY
+# Google AI Studio에서 발급받은 Gemini API 키
+GEMINI_API_KEY=YOUR_GEMINI_API_KEY
 ```
 
 -   `CLOVA_API_URL`, `CLOVA_SECRET_KEY`: [Naver Cloud Platform](https://www.ncloud.com/)에서 Clova OCR 서비스를 신청하고 발급받은 API Gateway URL과 Secret Key를 입력합니다.
--   `OPENAI_API_KEY`: [OpenAI Platform](https://platform.openai.com/)에서 발급받은 API 키를 입력합니다.
+-   `GEMINI_API_KEY`: [Google AI Studio](https://aistudio.google.com/app/apikey)에서 발급받은 API 키를 입력합니다.
 
 ## 실행 방법
 
