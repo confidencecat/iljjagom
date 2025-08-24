@@ -123,11 +123,9 @@ class TextInputBox:
             self._desired_cursor_x = None
 
     def _handle_text_input(self, text):
-        # IndexError 방지: 커서가 줄 개수보다 크면 빈 줄 추가
-        while self.cursor_line >= len(self.text_lines):
-            self.text_lines.append('')
         current_line = self.text_lines[self.cursor_line]
         new_line = current_line[:self.cursor_pos] + text + current_line[self.cursor_pos:]
+        
         if self.font.size(new_line)[0] > self.text_area_width:
             words, lines, current_line_text = new_line.split(' '), [], ''
             for word in words:
@@ -144,6 +142,7 @@ class TextInputBox:
         else:
             self.text_lines[self.cursor_line] = new_line
             self.cursor_pos += len(text)
+        
         if self.cursor_line >= self.scroll_y + self.max_visible_lines:
             self.scroll_y = self.cursor_line - self.max_visible_lines + 1
 
@@ -301,6 +300,26 @@ class ReadAIInterface:
         except Exception as e: print(f"TTS 스레드 오류: {e}")
         finally: self.is_loading, self.loading_message = False, ""
 
+    def _reset_to_start_screen(self):
+        """Resets all conversation state and returns to the start screen."""
+        try:
+            pygame.mixer.music.stop()
+        except Exception:
+            pass
+        
+        self.user_question = ""
+        self.ai_response = ""
+        self.accumulated_stt_text = ""
+        self._last_tts_path = None
+        if hasattr(self, 'voice_file_path'):
+            self.voice_file_path = None
+        
+        self.text_input.set_text("")
+        self.voice_stt_display.set_text("")
+        self.response_display.set_text("")
+        
+        self.current_screen = "start"
+
     def start_process_question(self):
         if self.is_loading: return
         threading.Thread(target=self._process_question_worker, daemon=True).start()
@@ -313,7 +332,10 @@ class ReadAIInterface:
                 self.current_screen = "ocr_guide"
                 self.is_loading = False
                 capture_info = self.book_detector.run()
-                if capture_info is None: self.current_screen = "start"; return
+                if capture_info is None:
+                    print("책 감지가 중단되었습니다. 시작 화면으로 돌아갑니다.")
+                    self._reset_to_start_screen()
+                    return
                 ocr_text, image_path, ocr_path = self.main_app.inform_system.process_capture(capture_info)
             self.is_loading, self.loading_message = True, "AI 응답 생성 중"
             edited_prompt = self.ai_system.create_prompt(self.user_question, ocr_text)
@@ -324,7 +346,7 @@ class ReadAIInterface:
             self.current_screen = "response"
             if getattr(self.main_app, 'tts_enabled', False) and self.ai_response and self.voice_system:
                 threading.Thread(target=self._tts_worker, args=(self.ai_response, self._reserve_next_tts_path()), daemon=True).start()
-        except Exception as e: 
+        except Exception as e:
             print(f"process_question 오류(스레드): {e}")
             self.ai_response = f"[AI 오류: {e}]"
             self.response_display.set_text(self.ai_response)
@@ -403,7 +425,7 @@ class ReadAIInterface:
     def handle_method(self, event):
         if self.buttons['text'].handle_event(event): self.current_screen = "text_input"
         if self.buttons['voice'].handle_event(event): self.current_screen = "voice_input"; self.accumulated_stt_text = ""; self.voice_stt_display.set_text("")
-        if self.buttons['back'].handle_event(event): self.current_screen = "start"
+        if self.buttons['back'].handle_event(event): self._reset_to_start_screen()
 
     def handle_text(self, event):
         self.text_input.handle_event(event)
@@ -424,12 +446,7 @@ class ReadAIInterface:
     def handle_response(self, event):
         self.response_display.handle_event(event)
         if self.buttons['resp_ok'].handle_event(event):
-            try: pygame.mixer.music.stop()
-            except Exception: pass
-            self.user_question, self.ai_response, self.accumulated_stt_text = "", "", ""
-            if hasattr(self, 'voice_file_path'): self.voice_file_path = None
-            self.text_input.set_text(""), self.voice_stt_display.set_text("")
-            self.current_screen = "start"
+            self._reset_to_start_screen()
         if 'tts_play' in self.buttons and self.buttons['tts_play'].handle_event(event):
             if self.ai_response and self.voice_system:
                 if self._last_tts_path and os.path.exists(self._last_tts_path):

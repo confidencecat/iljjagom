@@ -54,13 +54,13 @@ CLOVA_SECRET_KEY=YOUR_CLOVA_OCR_SECRET_KEY
 # Google AI Studio에서 발급받은 Gemini API 키 (AI 텍스트 답변용)
 GEMINI_API_KEY=YOUR_GEMINI_API_KEY
 
-# OpenAI API 키 (음성 인식 및 음성 합성용)
+# OpenAI API 키 (음성 인식 및 음성 출력용)
 OPENAI_API_KEY=YOUR_OPENAI_API_KEY
 ```
 
 -   `CLOVA_API_URL`, `CLOVA_SECRET_KEY`: [Naver Cloud Platform](https://www.ncloud.com/)에서 **Clova OCR** 서비스를 신청하고 발급받은 API 정보를 입력합니다.
 -   `GEMINI_API_KEY`: [Google AI Studio](https://aistudio.google.com/app/apikey)에서 **Gemini** API 키를 발급받아 입력합니다.
--   `OPENAI_API_KEY`: [OpenAI Platform](https://platform.openai.com/)에서 **Whisper (STT)**와 **TTS**를 위한 API 키를 발급받아 입력합니다.
+-   `OPENAI_API_KEY`: [OpenAI Platform](https://platform.openai.com/)에서 **STT**와 **TTS**를 위한 API 키를 발급받아 입력합니다.
 
 ## 실행 방법
 
