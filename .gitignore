@@ -84,6 +84,8 @@ __pycache__/
 venv/
 env/
 
+.gemini/
+
 # IDE / Editor specific
 .vscode/
 .idea/

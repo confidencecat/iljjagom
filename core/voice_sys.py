@@ -181,8 +181,17 @@ class VoiceSystem:
             'frame_count': len(self.frames)
         }
 
+    def _reserve_next_voice_path(self, base_path):
+        """voice_YYYYMMDD_HHMMSS_N.wav 처럼 중복 방지 파일명 예약"""
+        base, ext = os.path.splitext(base_path)
+        for i in range(1, 100):
+            candidate = f"{base}_{i}{ext}"
+            if not os.path.exists(candidate):
+                return candidate
+        raise RuntimeError("voice 파일명 예약 실패")
+
     def finish_recording(self):
-        """녹음 완료 및 STT 처리"""
+        """녹음 완료 및 STT 처리 (TTS와 동일한 안전 저장 방식)"""
         self.stop_recording()
 
         # 최소 녹음 시간 체크 (0.5초 이상)
@@ -195,25 +204,33 @@ class VoiceSystem:
             print(f"녹음 시간이 너무 짧습니다: {duration:.2f}초")
             return "녹음 시간이 너무 짧습니다. 최소 0.5초 이상 녹음해주세요.", None
 
-        # 타임스탬프로 파일명 생성
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         voice_filename = f"voice_{timestamp}.wav"
         voice_path = os.path.join(self.voice_dir, voice_filename)
+        tmp_path = voice_path + ".tmp"
 
         try:
-            # 음성 파일 저장
-            wf = wave.open(voice_path, 'wb')
+            # 임시 파일로 저장
+            wf = wave.open(tmp_path, 'wb')
             wf.setnchannels(self.channels)
             wf.setsampwidth(self.p.get_sample_size(self.format))
             wf.setframerate(self.rate)
             wf.writeframes(b''.join(self.frames))
             wf.close()
 
-            print(f"음성 파일 저장 완료: {voice_path} ({duration:.2f}초)")
+            # 파일명 충돌 시 새 이름 예약
+            final_path = voice_path
+            try:
+                os.replace(tmp_path, voice_path)
+            except Exception:
+                final_path = self._reserve_next_voice_path(voice_path)
+                os.replace(tmp_path, final_path)
+
+            print(f"음성 파일 저장 완료: {final_path} ({duration:.2f}초)")
 
             # STT 처리
-            stt_result = self.speech_to_text(voice_path)
-            return stt_result, voice_path
+            stt_result = self.speech_to_text(final_path)
+            return stt_result, final_path
 
         except Exception as e:
             print(f"음성 파일 생성 오류: {e}")
@@ -265,10 +282,19 @@ class VoiceSystem:
 
     def cleanup(self):
         """리소스 정리"""
-        self.stop_recording()
-        if hasattr(self, 'p') and self.p:
-            self.p.terminate()
+        try:
+            self.stop_recording()
+        except Exception:
+            pass
+        try:
+            if hasattr(self, 'p') and self.p:
+                self.p.terminate()
+        except Exception:
+            pass
 
     def __del__(self):
-        self.cleanup()
+        try:
+            self.cleanup()
+        except Exception:
+            pass
 

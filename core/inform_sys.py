@@ -69,11 +69,29 @@ class InformSystem:
 
         ocr_filename = f"ocr_{timestamp}.txt"
         ocr_path = os.path.join(self.ocr_dir, ocr_filename)
-        with open(ocr_path, 'w', encoding='utf-8') as f:
-            f.write(ocr_text)
-        print(f"OCR 결과 저장 완료: {ocr_path}")
-
-        return ocr_text, image_path, ocr_path
+        tmp_path = ocr_path + ".tmp"
+        # 임시 파일로 저장 후 원자적 이동, 파일명 충돌 시 새 이름 예약
+        def reserve_next_ocr_path(base_path):
+            base, ext = os.path.splitext(base_path)
+            for i in range(1, 100):
+                candidate = f"{base}_{i}{ext}"
+                if not os.path.exists(candidate):
+                    return candidate
+            raise RuntimeError("ocr 파일명 예약 실패")
+        try:
+            with open(tmp_path, 'w', encoding='utf-8') as f:
+                f.write(ocr_text)
+            final_path = ocr_path
+            try:
+                os.replace(tmp_path, ocr_path)
+            except Exception:
+                final_path = reserve_next_ocr_path(ocr_path)
+                os.replace(tmp_path, final_path)
+            print(f"OCR 결과 저장 완료: {final_path}")
+            return ocr_text, image_path, final_path
+        except Exception as e:
+            print(f"OCR 파일 저장 오류: {e}")
+            return ocr_text, image_path, None
 
 
     def perform_clova_ocr(self, image_path):
