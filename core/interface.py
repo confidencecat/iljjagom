@@ -123,9 +123,11 @@ class TextInputBox:
             self._desired_cursor_x = None
 
     def _handle_text_input(self, text):
+        # IndexError 방지: 커서가 줄 개수보다 크면 빈 줄 추가
+        while self.cursor_line >= len(self.text_lines):
+            self.text_lines.append('')
         current_line = self.text_lines[self.cursor_line]
         new_line = current_line[:self.cursor_pos] + text + current_line[self.cursor_pos:]
-        
         if self.font.size(new_line)[0] > self.text_area_width:
             words, lines, current_line_text = new_line.split(' '), [], ''
             for word in words:
@@ -142,7 +144,6 @@ class TextInputBox:
         else:
             self.text_lines[self.cursor_line] = new_line
             self.cursor_pos += len(text)
-        
         if self.cursor_line >= self.scroll_y + self.max_visible_lines:
             self.scroll_y = self.cursor_line - self.max_visible_lines + 1
 

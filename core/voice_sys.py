@@ -248,7 +248,8 @@ class VoiceSystem:
 
             with open(audio_path, "rb") as audio_file:
                 transcript = self.client.audio.transcriptions.create(
-                    model="whisper-1",
+                    #model="whisper-1",
+                    model="gpt-4o-transcribe",
                     file=audio_file,
                     language="ko"  # 한국어 지정
                 )
@@ -269,7 +270,8 @@ class VoiceSystem:
         try:
             voice = getattr(self, 'default_tts_voice', None) or 'alloy'
             response = self.client.audio.speech.create(
-                model="tts-1",
+                #model="tts-1",
+                model="gpt-4o-mini-tts",
                 voice=voice,
                 input=text,
             )

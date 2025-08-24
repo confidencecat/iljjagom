@@ -87,6 +87,12 @@ if __name__ == '__main__':
     selected_mic = args.mic if args.mic >= 0 else None
     print(f"선택된 마이크 장치 번호: {args.mic} (내부 전달 값: {selected_mic})")
 
+    voices = ["alloy", "ash", "ballad", "coral", "echo", "fable", "nova", "onyx", "sage", "shimmer"]
+    if args.tts_v not in voices:
+        print(f"유효하지 않은 TTS 목소리 이름입니다. 사용 가능한 목소리:\n {voices}")
+        print(f"기본 목소리를 사용합니다.  {voices[0]}")
+        args.tts_v = voices[0]
+
     app = MainApp(
         camera_source=args.source, 
         mic=selected_mic, 
