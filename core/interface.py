@@ -307,16 +307,31 @@ class ReadAIInterface:
         except Exception:
             pass
         
+        # 녹음 중이면 중지
+        if self.voice_system and self.voice_system.is_recording:
+            try:
+                self.voice_system.stop_recording()
+            except Exception as e:
+                print(f"녹음 중지 오류: {e}")
+        
+        # 모든 상태 초기화
         self.user_question = ""
         self.ai_response = ""
         self.accumulated_stt_text = ""
         self._last_tts_path = None
+        self._auto_played = False
+        
         if hasattr(self, 'voice_file_path'):
             self.voice_file_path = None
         
+        # UI 요소 초기화
         self.text_input.set_text("")
         self.voice_stt_display.set_text("")
         self.response_display.set_text("")
+        
+        # 로딩 상태 초기화
+        self.is_loading = False
+        self.loading_message = ""
         
         self.current_screen = "start"
 
@@ -423,25 +438,50 @@ class ReadAIInterface:
         if self.buttons['exit'].handle_event(event): pygame.event.post(pygame.event.Event(pygame.QUIT))
 
     def handle_method(self, event):
-        if self.buttons['text'].handle_event(event): self.current_screen = "text_input"
-        if self.buttons['voice'].handle_event(event): self.current_screen = "voice_input"; self.accumulated_stt_text = ""; self.voice_stt_display.set_text("")
-        if self.buttons['back'].handle_event(event): self._reset_to_start_screen()
+        if self.buttons['text'].handle_event(event): 
+            self.text_input.set_text("")  # 텍스트 입력 초기화
+            self.current_screen = "text_input"
+        if self.buttons['voice'].handle_event(event): 
+            self.current_screen = "voice_input"
+            self.accumulated_stt_text = ""
+            self.voice_stt_display.set_text("")
+        if self.buttons['back'].handle_event(event): 
+            self._reset_to_start_screen()
 
     def handle_text(self, event):
         self.text_input.handle_event(event)
         if self.buttons['submit'].handle_event(event) or (event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN):
-            self.user_question = self.text_input.get_text()
-            self.start_process_question()
-        if self.buttons['back'].handle_event(event): self.current_screen = "question_method"
+            user_input = self.text_input.get_text().strip()
+            if user_input:  # 빈 텍스트가 아닐 때만 처리
+                self.user_question = user_input
+                self.start_process_question()
+            else:
+                print("빈 질문은 처리할 수 없습니다.")
+        if self.buttons['back'].handle_event(event): 
+            self.text_input.set_text("")  # 텍스트 입력 초기화
+            self.current_screen = "question_method"
 
     def handle_voice(self, event):
-        if self.buttons['v_start'].handle_event(event): self.voice_system.start_recording()
-        if self.buttons['v_stop'].handle_event(event): self.start_finish_recording()
+        if self.buttons['v_start'].handle_event(event): 
+            self.voice_system.start_recording()
+        if self.buttons['v_stop'].handle_event(event): 
+            self.start_finish_recording()
         if self.buttons['v_complete'].handle_event(event) or (event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN):
-            if self.accumulated_stt_text:
+            if self.accumulated_stt_text.strip():  # 빈 텍스트가 아닐 때만 처리
                 self.user_question = self.accumulated_stt_text
                 self.start_process_question()
-        if self.buttons['back'].handle_event(event): self.current_screen = "question_method"
+            else:
+                print("빈 음성 질문은 처리할 수 없습니다.")
+        if self.buttons['back'].handle_event(event): 
+            # 녹음 중이면 중지
+            if self.voice_system and self.voice_system.is_recording:
+                try:
+                    self.voice_system.stop_recording()
+                except Exception as e:
+                    print(f"녹음 중지 오류: {e}")
+            self.accumulated_stt_text = ""
+            self.voice_stt_display.set_text("")
+            self.current_screen = "question_method"
 
     def handle_response(self, event):
         self.response_display.handle_event(event)
