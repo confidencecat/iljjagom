@@ -72,6 +72,6 @@ typing-inspection==0.4.1
 typing_extensions==4.14.1
 tzdata==2025.2
 ultralytics==8.3.176
-ultralytics-thop==2.0.15
+ultralytics-thop==2.0.17
 uritemplate==4.2.0
 urllib3==2.5.0
