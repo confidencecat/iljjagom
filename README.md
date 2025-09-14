@@ -1,7 +1,5 @@
 # 일짜곰 (iljjagom) - AI 도서 인식 및 질문 답변 시스템
 
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-
 **일짜곰**은 책의 내용을 카메라로 인식하고, 인식된 내용이나 일반적인 주제에 대해 음성 또는 텍스트로 자유롭게 질문하며 AI의 답변을 받을 수 있는 파이썬 기반의 데스크톱 애플리케이션입니다.
 
 ## 주요 기능
@@ -314,7 +312,3 @@ class TextInputBox:
 ### 3. 에러 복구
 - **Graceful Degradation**: 하나의 모듈이 실패해도 전체 시스템이 중단되지 않도록 설계되었습니다.
 - **자동 재시도**: 네트워크 오류나 일시적인 장치 문제 시 자동으로 재시도합니다.
-
-## 라이선스
-
-이 프로젝트는 [GPL v3 License](LICENSE)를 따릅니다.
