@@ -56,7 +56,7 @@ class BookDetector:
 
         detection_start_time = None
         stable_bbox = None
-        STABILITY_SECONDS = 5.0
+        STABILITY_SECONDS = 3.0
 
         print("문서/책을 카메라 앞에 놓아주세요...")
         print(" =======================================")
